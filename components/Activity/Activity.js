@@ -26,7 +26,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import ActivityHeader from "./ActivityHeader";
 import ActivityBody from "./ActivityBody";
-
+import Footer from "../Footer/Footer";
 const Activity = () => {
   const [selectedTab, setSelectedTab] = useState("current");
 
@@ -42,6 +42,9 @@ const Activity = () => {
 
       {/* Body sẽ cuộn và hiển thị theo giá trị của selectedTab */}
       <ActivityBody value={selectedTab} />
+      <View>
+        <Footer />
+      </View>
     </View>
   );
 };

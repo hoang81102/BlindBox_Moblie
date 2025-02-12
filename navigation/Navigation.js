@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "./HomeScreen";
 import NotificationScreen from "./NotificationScreen";
 import ActivityScreen from "./ActivityScreen";
+import ProfileScreen from "./ProfileScreen";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -24,6 +25,11 @@ const AppNavigator = () => {
           name="Notification"
           component={NotificationScreen}
           // options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

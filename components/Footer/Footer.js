@@ -24,7 +24,10 @@ const Footer = () => {
       >
         <FontAwesome5 name="bell" size={20} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.icon}>
+      <TouchableOpacity
+        style={styles.icon}
+        onPress={() => navigation.navigate("Profile")}
+      >
         <FontAwesome5 name="user" size={20} color="black" />
       </TouchableOpacity>
     </View>

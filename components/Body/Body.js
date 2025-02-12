@@ -1,7 +1,8 @@
 import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import ProductList from "./ProductList";
-import labubu from "../../assets/labubu.png";
+// import labubu from "../../assets/labubu.png";
+import labubu from "../../assets/labubu1.jpg";
 import dot from "../../assets/3dot.png";
 const Body = () => {
   const products = [
@@ -12,7 +13,8 @@ const Body = () => {
     { id: 5, imageSource: labubu, title: "Labubu 5" },
     { id: 6, imageSource: labubu, title: "Labubu 6" },
     { id: 7, imageSource: labubu, title: "Labubu 7" },
-    { id: 8, imageSource: dot, title: "View All" },
+    { id: 8, imageSource: labubu, title: "Labubu 8" },
+    // { id: 8, imageSource: dot, title: "View All" },
   ];
 
   return (

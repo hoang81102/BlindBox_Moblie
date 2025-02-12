@@ -21,9 +21,9 @@ const Advertisement = () => {
   return (
     <View style={styles.container}>
       <View style={styles.intro}>
-        <Text style={styles.title}>Khám phá </Text>
+        <Text style={styles.title}>Bộ sưu tập </Text>
         <FontAwesome5 name="eye" size={14} color="black" />
-        <FontAwesome5 name="eye" size={14} color="black" />
+        {/* <FontAwesome5 name="eye" size={14} color="black" /> */}
       </View>
       <FlatList
         data={CarouselList}
@@ -48,7 +48,7 @@ const Advertisement = () => {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 500,
+    top: 550,
     marginBottom: 20,
     height: 220, // Chiều cao carousel
   },

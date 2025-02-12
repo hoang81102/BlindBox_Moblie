@@ -25,12 +25,12 @@ const styles = StyleSheet.create({
     elevation: 5, // Độ sâu bóng đổ trên Android
     marginRight: 16, // Tạo khoảng cách giữa các thẻ khi hiển thị ngang
     width: 80, // Cố định chiều rộng thẻ
-    height: 50,
+    height: 80,
     alignItems: "center", // Căn giữa nội dung trong thẻ
   },
   image: {
     width: "100%",
-    height: 50,
+    height: 80,
     resizeMode: "cover",
   },
   title: {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 7,
-    marginBottom: 10,
+    marginBottom: 20,
   },
 });
 
