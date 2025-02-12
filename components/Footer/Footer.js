@@ -12,7 +12,10 @@ const Footer = () => {
       >
         <FontAwesome5 name="home" size={20} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.icon}>
+      <TouchableOpacity
+        style={styles.icon}
+        onPress={() => navigation.navigate("Activity")}
+      >
         <FontAwesome5 name="clock" size={20} color="black" />
       </TouchableOpacity>
       <TouchableOpacity
