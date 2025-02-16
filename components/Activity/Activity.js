@@ -1,27 +1,3 @@
-// import React from "react";
-// import { View, StyleSheet } from "react-native";
-// import ActivityHeader from "./ActivityHeader";
-// import ActivityBody from "./ActivityBody";
-
-// const Activity = () => {
-//   return (
-//     <View style={styles.container}>
-//       <ActivityHeader />
-//       <ActivityBody />
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#fff",
-//     height: "100%",
-//   },
-// });
-
-// export default Activity;
-
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import ActivityHeader from "./ActivityHeader";

@@ -1,35 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import ActivityBody from "./ActivityBody";
 
 const ActivityHeader = ({ onTabChange }) => {
   const [selected, setSelected] = useState("current");
 
+  const handleTabChange = useCallback((value) => {
+    setSelected(value);
+  }, []);
+
   useEffect(() => {
     if (onTabChange) {
-      onTabChange(selected); // Gửi trạng thái selected lên component cha
+      onTabChange(selected); // Send the selected state to the parent component
     }
   }, [selected, onTabChange]);
 
-  const handleSelected = (value) => {
-    setSelected(value);
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hoạt động</Text>
+      <Text style={styles.title}>Activities</Text>
       <View style={styles.statusWrapper}>
         <TouchableOpacity
           style={[
             styles.status,
             selected === "current" ? styles.active : styles.inactive,
           ]}
-          onPress={() => handleSelected("current")}
+          onPress={() => handleTabChange("current")}
+          accessibilityLabel="Current orders"
+          accessibilityRole="button"
         >
           <Text
             style={[styles.text, selected === "current" && styles.textActive]}
           >
-            Đơn đang đặt
+            Current Orders
           </Text>
         </TouchableOpacity>
 
@@ -38,12 +39,14 @@ const ActivityHeader = ({ onTabChange }) => {
             styles.status,
             selected === "history" ? styles.active : styles.inactive,
           ]}
-          onPress={() => handleSelected("history")}
+          onPress={() => handleTabChange("history")}
+          accessibilityLabel="Order history"
+          accessibilityRole="button"
         >
           <Text
             style={[styles.text, selected === "history" && styles.textActive]}
           >
-            Lịch sử
+            Order History
           </Text>
         </TouchableOpacity>
       </View>
@@ -54,31 +57,32 @@ const ActivityHeader = ({ onTabChange }) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 160, // Set height for header to prevent overlap
+    height: 180, // Increased height for a more spacious header
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5F5F5",
-    borderBottomColor: "black",
-    borderBottomWidth: 0.5,
-    marginTop: 10,
-    flex: 0, // Make header non-flexible
+    backgroundColor: "#A5D8FF", // Light blue background
+    borderBottomColor: "#4C9AFF", // Lighter blue bottom border
+    borderBottomWidth: 0.6,
+    shadowColor: "#000", // Shadow effect
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5, // Elevated shadow for Android
   },
   title: {
-    fontSize: 22,
+    fontSize: 26, // Larger font size for emphasis
     fontWeight: "bold",
-    color: "#3A2E50",
-    marginBottom: 15,
-    alignItems: "center",
-    justifyContent: "center",
+    color: "#2C3E50", // Dark gray text for readability
+    marginBottom: 20,
   },
   statusWrapper: {
     flexDirection: "row",
-    width: "80%",
-    height: 50,
-    backgroundColor: "#EDEDED",
+    width: "85%", // Increased width for the tabs
+    height: 55, // Increased height for better visibility
+    backgroundColor: "#FFFFFF", // White background for the tabs
     borderRadius: 12,
     overflow: "hidden",
-    borderColor: "#8CA6DB",
+    borderColor: "#B0BEC5", // Light gray border for a subtle look
     elevation: 4,
     borderWidth: 1,
   },
@@ -86,23 +90,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 10, // Added padding for easier tapping
   },
   active: {
-    backgroundColor: "#9B6FC4",
-    borderBottomWidth: 3,
-    borderBottomColor: "#8CA6DB",
+    backgroundColor: "#4C9AFF", // Active state with a bright blue background
+    borderBottomWidth: 4,
+    borderBottomColor: "#FFFFFF", // White border at the bottom when active
   },
   inactive: {
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF", // White background when inactive
   },
   text: {
-    color: "#3A2E50",
+    color: "#2C3E50", // Dark gray text when inactive
     fontSize: 16,
     fontWeight: "600",
     textTransform: "uppercase",
   },
   textActive: {
-    color: "#FFFFFF",
+    color: "#FFFFFF", // White text when tab is active
     fontWeight: "bold",
   },
 });

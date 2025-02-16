@@ -1,23 +1,31 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import background from "../assets/Profile.png";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "react-native-vector-icons";
 import Footer from "../components/Footer/Footer";
+import { useNavigation } from "@react-navigation/native";
+import avatar from "../assets/man.jpg";
+
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+  const handleNavigation = (value) => {
+    if (value === "Cart") {
+      navigation.navigate("Cart");
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.header}>
-        <Image source={background} style={styles.image} />
-        <View style={styles.priceContainer}>
-          <Text style={styles.price}>1.650.000 VNĐ</Text>
-        </View>
+      {/* Header */}
+      <View style={styles.headerContainer}>
+        <Image source={avatar} style={styles.avatarImage} />
+        <Text style={styles.userName}>Thi Minh Đạt</Text>
+        {/* <Text style={styles.userInfoPhone}>0865689021</Text> */}
       </View>
 
       {/* User information */}
-      <View style={styles.userInfoContainer}>
-        <TouchableOpacity>
-          <Text style={styles.userInfoName}>Thi Minh Đạt</Text>
-          <Text style={styles.userInfoPhone}>0865689021</Text>
+      <View style={styles.userProfileContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate("ProfileUpdated")}>
+          <Text style={styles.userInfoName}>Cập nhật hồ sơ</Text>
         </TouchableOpacity>
       </View>
 
@@ -26,8 +34,16 @@ const ProfileScreen = () => {
       {/* Menu options */}
       <View style={styles.menuContainer}>
         {menuItems.map((item, index) => (
-          <TouchableOpacity key={index} style={styles.menuItem}>
-            <FontAwesome5 name={item.icon} size={20} color="#000" />
+          <TouchableOpacity
+            key={index}
+            style={styles.menuItem}
+            onPress={() => {
+              if (item.text === "Cart") {
+                handleNavigation("Cart");
+              }
+            }}
+          >
+            <Ionicons name={item.icon} size={20} color="#2C3E50" />
             <Text style={styles.menuText}>{item.text}</Text>
           </TouchableOpacity>
         ))}
@@ -39,7 +55,7 @@ const ProfileScreen = () => {
       <View>
         {settingsItems.map((item, index) => (
           <TouchableOpacity key={index} style={styles.settingsItem}>
-            <FontAwesome5 name={item.icon} size={20} />
+            <Ionicons name={item.icon} size={20} color="#2C3E50" />
             <Text style={styles.settingsText}>{item.text}</Text>
           </TouchableOpacity>
         ))}
@@ -49,122 +65,136 @@ const ProfileScreen = () => {
       {/* Sign out section */}
       <View style={styles.signOut}>
         <TouchableOpacity style={styles.signOutButton}>
-          <FontAwesome5 name="sign-out-alt" size={20} />
+          <Ionicons name="log-out-outline" size={20} color="#fff" />
           <Text style={styles.signOutText}>Đăng xuất</Text>
         </TouchableOpacity>
       </View>
-      <View>
-        <Footer />
-      </View>
+      <Footer />
     </View>
   );
 };
 
 const menuItems = [
-  { icon: "shopping-cart", text: "Giỏ hàng" },
-  { icon: "wallet", text: "Quản lý thanh toán" },
-  { icon: "file-invoice", text: "Thông tin hoá đơn" },
-  { icon: "bookmark", text: "Địa chỉ đã lưu" },
+  { icon: "cart", text: "Cart" },
+  { icon: "wallet", text: "Wallet" },
+  { icon: "document-text", text: "Invoice Information" },
+  { icon: "bookmark", text: "Address Saved" },
 ];
 
 const settingsItems = [
-  { icon: "file-contract", text: "Điều khoản và chính sách" },
+  { icon: "file-tray", text: "Điều khoản và chính sách" },
   { icon: "headset", text: "Trung tâm hỗ trợ" },
-  { icon: "building", text: "Thông tin shop" },
-  { icon: "cog", text: "Cài đặt tài khoản" },
+  { icon: "business", text: "Thông tin shop" },
+  { icon: "settings", text: "Cài đặt tài khoản" },
   { icon: "key", text: "Đổi mật khẩu" },
 ];
 
 const styles = StyleSheet.create({
-  // Header style (image and price)
-  header: {
+  // Header style
+  headerContainer: {
     width: "100%",
-    height: 200,
-    borderWidth: 1,
+    height: 140,
+    backgroundColor: "#A5D8FF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
     position: "relative",
-  },
-  image: {
-    width: "100%",
-    height: 200,
-  },
-  priceContainer: {
-    position: "absolute",
-    bottom: 28,
-    left: 28,
-    paddingVertical: 5,
-  },
-  price: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-
-  // User info section
-  userInfoContainer: {
     paddingHorizontal: 20,
-    borderBottomWidth: 0.2,
-    flexDirection: "column",
-    textAlign: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
-  userInfoName: {
-    marginTop: 10,
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+    resizeMode: "cover",
+  },
+  userName: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#2C3E50",
   },
   userInfoPhone: {
     fontSize: 16,
-    marginVertical: 2,
+    color: "#7f8c8d",
   },
 
-  // Spacer between sections
+  // User Profile Section
+  userProfileContainer: {
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    paddingVertical: 15,
+    alignItems: "center",
+  },
+  userInfoName: {
+    fontSize: 18,
+
+    color: "#2C3E50",
+  },
+
+  // Spacer
   wrap: {
-    backgroundColor: "#c6bdc0",
-    height: 10,
+    backgroundColor: "#f7f7f7",
+    height: 8,
   },
 
-  // Menu section styles
+  // Menu Section
   menuContainer: {
     paddingHorizontal: 20,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 12,
+    marginVertical: 15,
   },
   menuText: {
-    marginLeft: 10,
+    marginLeft: 15,
     fontSize: 16,
+    color: "#2C3E50",
   },
 
-  // Settings section styles
+  // Settings Section
   settingsItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 12,
+    marginVertical: 15,
     paddingLeft: 20,
   },
   settingsText: {
-    marginLeft: 10,
+    marginLeft: 15,
     fontSize: 16,
+    color: "#2C3E50",
   },
 
-  // Sign out section styles
+  // Sign out Section
   signOut: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: "auto",
-    marginBottom: 70,
-    // backgroundColor: "red",
+    marginBottom: 40,
   },
   signOutButton: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#E74C3C",
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 8,
   },
   signOutText: {
     marginLeft: 10,
     fontSize: 16,
+    color: "#fff",
+  },
+
+  // Footer
+  footer: {
+    backgroundColor: "#fff",
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+    paddingVertical: 10,
+    alignItems: "center",
   },
 });
 

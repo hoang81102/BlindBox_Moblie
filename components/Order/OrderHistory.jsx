@@ -1,101 +1,41 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Text,
-  Image,
-  Alert,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 import labubu from "../../assets/labubu.png";
 
 const OrderHistory = () => {
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Order History</Text> */}
-      {/* Đây là phần trạng thái */}
       <View style={styles.statusContainer}>
         <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Đã nhận hàng</Text>
+          <Text style={styles.statusText}>Delivered</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Đã huỷ hàng</Text>
+          <Text style={styles.statusText}>Canceled</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Đã hoàn tiền</Text>
+          <Text style={styles.statusText}>Refunded</Text>
         </TouchableOpacity>
       </View>
-      {/* Đây là phần các thẻ orderCard */}
+
       <TouchableOpacity style={styles.orderCard}>
         <View style={styles.imageContainer}>
           <Image source={labubu} style={styles.image} />
         </View>
         <View>
-          <Text style={styles.title}>Labubu - Phiên bản giới hạn</Text>
+          <Text style={styles.title}>Labubu - Limited Edition</Text>
           <Text style={styles.text}>Size S</Text>
           <View style={styles.subTotal}>
-            <Text style={styles.price}>544.000Đ</Text>
+            <Text style={styles.price}>544,000 VND</Text>
             <Text style={styles.text}> * 1</Text>
           </View>
           <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Tổng cộng:</Text>
-            <Text style={styles.total}> 544.000Đ </Text>
+            <Text style={styles.totalLabel}>Total:</Text>
+            <Text style={styles.total}> 544,000 VND </Text>
           </View>
           <TouchableOpacity style={styles.received}>
-            <Text style={styles.receivedText}> Trạng thái: </Text>
+            <Text style={styles.receivedText}>Status: </Text>
             <Text style={[styles.receivedText, { fontWeight: "bold" }]}>
-              {" "}
-              Đã nhận hàng
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.orderCard}>
-        <View style={styles.imageContainer}>
-          <Image source={labubu} style={styles.image} />
-        </View>
-        <View>
-          <Text style={styles.title}>Labubu - Phiên bản giới hạn</Text>
-          <Text style={styles.text}>Size S</Text>
-          <View style={styles.subTotal}>
-            <Text style={styles.price}>544.000Đ</Text>
-            <Text style={styles.text}> * 1</Text>
-          </View>
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Tổng cộng:</Text>
-            <Text style={styles.total}> 544.000Đ </Text>
-          </View>
-          <TouchableOpacity style={styles.cancel}>
-            <Text style={styles.cancelText}> Trạng thái: </Text>
-            <Text style={[styles.cancelText, { fontWeight: "bold" }]}>
-              {" "}
-              Đã huỷ hàng
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.orderCard}>
-        <View style={styles.imageContainer}>
-          <Image source={labubu} style={styles.image} />
-        </View>
-        <View>
-          <Text style={styles.title}>Labubu - Phiên bản giới hạn</Text>
-          <Text style={styles.text}>Size S</Text>
-          <View style={styles.subTotal}>
-            <Text style={styles.price}>544.000Đ</Text>
-            <Text style={styles.text}> * 1</Text>
-          </View>
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Tổng cộng:</Text>
-            <Text style={styles.total}> 544.000Đ </Text>
-          </View>
-          <TouchableOpacity style={styles.refund}>
-            <Text style={styles.refundText}> Trạng thái: </Text>
-            <Text style={[styles.refundText, { fontWeight: "bold" }]}>
-              {" "}
-              Đã hoàn tiền
+              Delivered
             </Text>
           </TouchableOpacity>
         </View>
@@ -106,15 +46,15 @@ const OrderHistory = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 4,
+    backgroundColor: "#F7F7F7", // Lighter background for consistency with the header
   },
-  // Phần status
   statusContainer: {
     flexDirection: "row",
     flexWrap: "nowrap",
     justifyContent: "space-around",
+    padding: 10,
   },
-  statusText: {
+  statusButton: {
     borderWidth: 0.8,
     borderRadius: 12,
     paddingVertical: 6,
@@ -123,13 +63,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#333",
     borderColor: "#ccc",
+    backgroundColor: "#A5D8FF", // Light blue matching the header
   },
-  // Phần orderCard
+  statusText: {
+    fontSize: 14,
+    color: "#2C3E50", // Dark gray for status text
+  },
   orderCard: {
-    maxWidth: "100%",
-    backgroundColor: "#fff",
+    maxWidth: "95%",
+    backgroundColor: "#FFFFFF", // White background for the order card
     padding: 15,
     marginVertical: 10,
+    marginHorizontal: 10,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -155,59 +100,72 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#190054", // Màu xanh đậm cho tiêu đề
+    color: "#2C3E50", // Matching header text color
     marginBottom: 10,
   },
   text: {
     fontSize: 14,
-    color: "#0d0045", // Màu đậm cho các thông tin phụ
+    color: "#0d0045", // Dark purple for additional information
     marginVertical: 3,
   },
   subTotal: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderBottomWidth: 1,
-    borderBottomColor: "#D3D3D3",
-    marginBottom: 5,
+    borderBottomColor: "#DCDCDC",
+    marginBottom: 4,
   },
+
   price: {
-    fontSize: 18,
-    color: "#52008c", // Màu tím cho giá
+    fontSize: 16,
+    color: "#2C3E50",
     fontWeight: "bold",
+    textAlign: "right",
   },
+
   totalContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderBottomWidth: 1,
-    borderBottomColor: "#D3D3D3",
-    marginBottom: 10,
+    borderBottomColor: "#DCDCDC",
+    marginBottom: 6,
   },
+
   totalLabel: {
-    fontSize: 16,
-    color: "#52008c", // Dùng màu giống giá
-    fontWeight: "bold",
-  },
-  total: {
-    fontSize: 18,
-    color: "#FF6347", // Dùng màu đỏ cam cho tổng để nổi bật hơn
-    fontWeight: "bold",
-  },
-  status: {
     fontSize: 14,
-    color: "#9B6FC4", // Màu nhẹ cho trạng thái
-    fontStyle: "italic",
-    marginTop: 10,
+    color: "#2C3E50",
+    fontWeight: "bold",
   },
+
+  total: {
+    fontSize: 16,
+    color: "#2C3E50",
+    fontWeight: "bold",
+    textAlign: "right",
+  },
+
   received: {
     flexDirection: "row",
+  },
+  receivedText: {
+    fontSize: 14,
+    color: "black",
   },
   cancel: {
     flexDirection: "row",
   },
+  cancelText: {
+    fontSize: 14,
+    color: "#FF6347", // Red-orange for canceled status
+  },
   refund: {
     flexDirection: "row",
+  },
+  refundText: {
+    fontSize: 14,
+    color: "#FFD700", // Yellow for refunded status
   },
 });
 

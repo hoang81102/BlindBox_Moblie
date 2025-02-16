@@ -1,34 +1,71 @@
-import { FontAwesome5 } from "@expo/vector-icons";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "react-native-vector-icons"; // Sử dụng Ionicons
+import { useNavigation, useRoute } from "@react-navigation/native"; // Thêm useRoute
+
 const Footer = () => {
   const navigation = useNavigation();
+  const route = useRoute(); // Để lấy thông tin màn hình hiện tại
+
+  const [selectedIcon, setSelectedIcon] = useState(route.name); // Khởi tạo trạng thái bằng tên route hiện tại
+
+  useEffect(() => {
+    setSelectedIcon(route.name); // Cập nhật khi màn hình thay đổi
+  }, [route.name]); // Dựa vào thay đổi của route để cập nhật
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.icon}
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => {
+          setSelectedIcon("home");
+          navigation.navigate("Home");
+        }}
       >
-        <FontAwesome5 name="home" size={20} color="black" />
+        <Ionicons
+          name="home"
+          size={25}
+          color={selectedIcon === "home" ? "#4A90E2" : "black"}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.icon}
-        onPress={() => navigation.navigate("Activity")}
+        onPress={() => {
+          setSelectedIcon("activity");
+          navigation.navigate("Activity");
+        }}
       >
-        <FontAwesome5 name="clock" size={20} color="black" />
+        <Ionicons
+          name="time"
+          size={25}
+          color={selectedIcon === "activity" ? "#4A90E2" : "black"}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.icon}
-        onPress={() => navigation.navigate("Notification")}
+        onPress={() => {
+          setSelectedIcon("cart");
+          navigation.navigate("Cart");
+        }}
       >
-        <FontAwesome5 name="bell" size={20} color="black" />
+        <Ionicons
+          name="cart"
+          size={25}
+          color={selectedIcon === "cart" ? "#4A90E2" : "black"}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.icon}
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() => {
+          setSelectedIcon("profile");
+          navigation.navigate("Profile");
+        }}
       >
-        <FontAwesome5 name="user" size={20} color="black" />
+        <Ionicons
+          name="person"
+          size={25}
+          color={selectedIcon === "profile" ? "#4A90E2" : "black"}
+        />
       </TouchableOpacity>
     </View>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import SearchBar from "./SearchBar";
 import Notification from "./Notification";
-import Cart from "./Cart";
+
 import { View, StyleSheet, Text } from "react-native";
 import Background from "./Background";
 const Header = () => {

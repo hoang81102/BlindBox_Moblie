@@ -10,14 +10,13 @@ import {
 import labubu from "../../assets/labubu.png";
 
 const CurrentOrders = () => {
-  // Hàm xử lý khi nhấn "Huỷ đơn"
   const handleCancelOrder = () => {
     Alert.alert(
-      "Xác nhận huỷ đơn",
-      "Bạn có chắc chắn muốn huỷ đơn hàng này không?",
+      "Confirm cancellation",
+      "Are you sure you want to cancel this order?",
       [
-        { text: "Không", style: "cancel" },
-        { text: "Có", onPress: () => console.log("Đơn hàng đã bị huỷ") },
+        { text: "No", style: "cancel" },
+        { text: "Yes", onPress: () => console.log("Order has been canceled") },
       ]
     );
   };
@@ -25,35 +24,32 @@ const CurrentOrders = () => {
     <View style={styles.container}>
       <View style={styles.statusContainer}>
         <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Tất cả</Text>
+          <Text style={styles.statusText}>All Orders</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Đã thanh toán</Text>
+          <Text style={styles.statusText}>Paid</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Chờ thanh toán</Text>
+          <Text style={styles.statusText}>Pending Payment</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Đã hoàn tiền</Text>
-        </TouchableOpacity> */}
       </View>
       <TouchableOpacity style={styles.orderCard}>
         <View style={styles.imageContainer}>
           <Image source={labubu} style={styles.image} />
         </View>
         <View>
-          <Text style={styles.title}>Labubu - Phiên bản giới hạn</Text>
+          <Text style={styles.title}>Labubu - Limited Edition</Text>
           <Text style={styles.text}>Size S</Text>
           <View style={styles.subTotal}>
-            <Text style={styles.price}>544.000Đ</Text>
+            <Text style={styles.price}>544.000 VND</Text>
             <Text style={styles.text}> * 1</Text>
           </View>
           <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Tổng cộng:</Text>
-            <Text style={styles.total}> 544.000Đ </Text>
+            <Text style={styles.totalLabel}>Total:</Text>
+            <Text style={styles.total}> 544.000 VND </Text>
           </View>
           <TouchableOpacity style={styles.cancel} onPress={handleCancelOrder}>
-            <Text style={styles.cancelText}>Huỷ đơn</Text>
+            <Text style={styles.cancelText}>Cancel Order</Text>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -63,17 +59,22 @@ const CurrentOrders = () => {
           <Image source={labubu} style={styles.image} />
         </View>
         <View>
-          <Text style={styles.title}>Labubu - Phiên bản giới hạn </Text>
+          <Text style={styles.title}>Labubu - Limited Edition</Text>
           <Text style={styles.text}>Size S</Text>
           <View style={styles.subTotal}>
-            <Text style={styles.price}>544.000Đ</Text>
+            <Text style={styles.price}>544.000 VND</Text>
             <Text style={styles.text}> * 1</Text>
           </View>
           <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Tổng cộng:</Text>
-            <Text style={styles.total}> 544.000Đ </Text>
+            <Text style={styles.totalLabel}>Total:</Text>
+            <Text style={styles.total}> 544.000 VND </Text>
           </View>
-          <Text style={styles.status}>Trạng thái: Nhân viên đang đóng gói</Text>
+          <View style={styles.statusDeliveryContainer}>
+            <Text style={styles.statusDelivery}>Status: </Text>
+            <Text style={[styles.statusDelivery, { fontWeight: "bold" }]}>
+              Packaging by staff
+            </Text>
+          </View>
         </View>
       </TouchableOpacity>
     </View>
@@ -82,31 +83,38 @@ const CurrentOrders = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F7F7F7", // Lighter background for consistency with the header
   },
   statusContainer: {
     flexDirection: "row",
     flexWrap: "nowrap",
     justifyContent: "space-around",
+    padding: 10,
   },
-  // statusButton: {
-  //   marginLeft: 5,
-  // },
   statusText: {
-    borderWidth: 0.8,
+    fontSize: 14,
+    color: "#2C3E50", // Chỉnh lại màu sắc cho đậm hơn (màu xám tối hơn)
+    fontWeight: "bold", // Thêm font-weight để làm chữ đậm
+  },
+
+  statusButton: {
+    backgroundColor: "#A5D8FF", // Giữ nguyên màu nền
     borderRadius: 12,
     paddingVertical: 6,
     paddingHorizontal: 12,
     fontSize: 14,
     textAlign: "center",
-    color: "#333",
+    color: "#2C3E50", // Giữ màu chữ ở đây cho rõ ràng
     borderColor: "#ccc",
+    // Bạn có thể thử thay màu nền và viền để làm cho nó nổi bật hơn
   },
+
   orderCard: {
-    maxWidth: "100%",
-    backgroundColor: "#fff",
+    maxWidth: "95%",
+    backgroundColor: "#FFFFFF",
     padding: 15,
     marginVertical: 10,
+    marginHorizontal: 10,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -132,68 +140,77 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#190054", // Màu xanh đậm cho tiêu đề
+    color: "#2C3E50", // Matching header text color
     marginBottom: 10,
   },
   text: {
     fontSize: 14,
-    color: "#0d0045", // Màu đậm cho các thông tin phụ
+    color: "#0d0045",
     marginVertical: 3,
   },
   subTotal: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderBottomWidth: 1,
-    borderBottomColor: "#D3D3D3",
-    marginBottom: 5,
+    borderBottomColor: "#DCDCDC",
+    marginBottom: 4,
   },
+
   price: {
-    fontSize: 18,
-    color: "#52008c", // Màu tím cho giá
+    fontSize: 16,
+    color: "#2C3E50",
     fontWeight: "bold",
+    textAlign: "right",
   },
+
   totalContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderBottomWidth: 1,
-    borderBottomColor: "#D3D3D3",
-    marginBottom: 10,
+    borderBottomColor: "#DCDCDC",
+    marginBottom: 6,
   },
+
   totalLabel: {
-    fontSize: 16,
-    color: "#52008c", // Dùng màu giống giá
-    fontWeight: "bold",
-  },
-  total: {
-    fontSize: 18,
-    color: "#FF6347", // Dùng màu đỏ cam cho tổng để nổi bật hơn
-    fontWeight: "bold",
-  },
-  status: {
     fontSize: 14,
-    color: "#9B6FC4", // Màu nhẹ cho trạng thái
-    fontStyle: "italic",
-    marginTop: 10,
+    color: "#2C3E50",
+    fontWeight: "bold",
   },
+
+  total: {
+    fontSize: 16,
+    color: "#2C3E50",
+    fontWeight: "bold",
+    textAlign: "right",
+  },
+
   cancel: {
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    backgroundColor: "#D32F2F",
-    borderRadius: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    backgroundColor: "#E74C3C",
+    borderRadius: 25,
     alignSelf: "flex-end",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 4,
   },
+
   cancelText: {
     color: "#FFFFFF",
-    fontSize: 14,
     fontWeight: "bold",
-    textTransform: "uppercase",
+    fontSize: 14,
+    textAlign: "center",
+  },
+  statusDeliveryContainer: {
+    flexDirection: "row",
+  },
+  statusDelivery: {
+    fontSize: 14,
+    color: "black",
   },
 });
 
