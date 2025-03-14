@@ -6,10 +6,15 @@ import NotificationScreen from "./NotificationScreen";
 import ActivityScreen from "./ActivityScreen";
 import ProfileScreen from "./ProfileScreen";
 import CartScreen from "./CartScreen";
-import OrderDetailScreen from "./OrderDetailScreen";
+import DetailProductScreen from "./DetailProductScreen";
 import CheckoutScreen from "./CheckoutScreen";
 import { shadow } from "react-native-paper";
 import ProfileUpdatedScreen from "./ProfileUpdatedScreen";
+import LoginScreen from "./LoginScreen";
+import ViewAllProductsScreen from "./ViewAllProductsScreen";
+import RetailScreen from "./RetailScreen";
+import PackageScreen from "./PackageScreen";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -44,8 +49,8 @@ const AppNavigator = () => {
         />
 
         <Stack.Screen
-          name="OrderDetail"
-          component={OrderDetailScreen}
+          name="DetailProduct"
+          component={DetailProductScreen} // lỗi ở đây
           options={{ headerShown: false }}
         />
 
@@ -58,6 +63,28 @@ const AppNavigator = () => {
         <Stack.Screen
           name="ProfileUpdated"
           component={ProfileUpdatedScreen}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="ViewAllProducts"
+          component={ViewAllProductsScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RetailProducts"
+          component={RetailScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PackageProducts"
+          component={PackageScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

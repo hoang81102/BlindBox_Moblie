@@ -1,51 +1,63 @@
-import React from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import ProductList from "./ProductList";
-// import labubu from "../../assets/labubu.png";
-import popmart from "../../assets/popmart.jpg";
-import dot from "../../assets/3dot.png";
+import React, { useState } from "react";
+import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import ServiceList from "./ServiceList";
 import { useNavigation } from "@react-navigation/native";
+import SpinWheelModal from "./SpinWheelModal";
+
+const services = [
+  { id: 1, icon: "shopping-cart", title: "Retail" },
+  { id: 2, icon: "box", title: "Package" },
+  { id: 3, icon: "spinner", title: "Lucky Wheel" },
+];
+
 const Body = () => {
   const navigation = useNavigation();
-  const products = [
-    { id: 1, imageSource: popmart, title: "Labubu 1" },
-    { id: 2, imageSource: popmart, title: "Labubu 2" },
-    { id: 3, imageSource: popmart, title: "Labubu 3" },
-    { id: 4, imageSource: popmart, title: "Labubu 4" },
-    { id: 5, imageSource: popmart, title: "Labubu 5" },
-    { id: 6, imageSource: popmart, title: "Labubu 6" },
-    { id: 7, imageSource: popmart, title: "Labubu 7" },
-    { id: 8, imageSource: popmart, title: "Labubu 8" },
-    // { id: 8, imageSource: dot, title: "View All" },
-  ];
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const handlePress = (title) => {
+    switch (title) {
+      case "Retail":
+        navigation.navigate("RetailProducts");
+        break;
+      case "Package":
+        navigation.navigate("PackageProducts");
+        break;
+      case "Lucky Wheel":
+        setIsModalVisible(true);
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <View style={styles.bodyContainer}>
-      {/* Dùng FlatList để hiển thị 2 hàng, mỗi hàng 4 item */}
-      <TouchableOpacity onPress={() => navigation.navigate("OrderDetail")}>
-        <FlatList
-          data={products}
-          renderItem={({ item }) => (
-            <ProductList title={item.title} imageSource={item.imageSource} />
-          )}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={4} // Chia thành 4 cột (mỗi hàng có 4 item)
-          numRows={2}
-          contentContainerStyle={styles.scrollContainer}
-        />
-      </TouchableOpacity>
+      <FlatList
+        data={services}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handlePress(item.title)}>
+            <ServiceList title={item.title} icon={item.icon} />
+          </TouchableOpacity>
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={4}
+        contentContainerStyle={styles.scrollContainer}
+      />
+      <SpinWheelModal onClose={handleCloseModal} isVisible={isModalVisible} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   bodyContainer: {
-    flex: 1,
-    marginTop: 310, // Khoảng cách từ trên cùng
-    marginLeft: 10,
+    marginTop: 350,
   },
   scrollContainer: {
-    paddingVertical: 10, // Khoảng cách giữa các hàng
+    paddingTop: 10,
   },
 });
 

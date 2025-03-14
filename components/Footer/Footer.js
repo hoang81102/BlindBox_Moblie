@@ -24,8 +24,9 @@ const Footer = () => {
       >
         <Ionicons
           name="home"
-          size={25}
-          color={selectedIcon === "home" ? "#4A90E2" : "black"}
+          size={30}
+          color={selectedIcon === "home" ? "#ffffff" : "#f0f0f0"} // Màu sáng khi chọn
+          style={selectedIcon === "home" ? styles.selectedIcon : null} // Thêm hiệu ứng khi chọn
         />
       </TouchableOpacity>
       <TouchableOpacity
@@ -37,8 +38,9 @@ const Footer = () => {
       >
         <Ionicons
           name="time"
-          size={25}
-          color={selectedIcon === "activity" ? "#4A90E2" : "black"}
+          size={30}
+          color={selectedIcon === "activity" ? "#ffffff" : "#f0f0f0"} // Màu sáng khi chọn
+          style={selectedIcon === "activity" ? styles.selectedIcon : null} // Thêm hiệu ứng khi chọn
         />
       </TouchableOpacity>
       <TouchableOpacity
@@ -50,8 +52,9 @@ const Footer = () => {
       >
         <Ionicons
           name="cart"
-          size={25}
-          color={selectedIcon === "cart" ? "#4A90E2" : "black"}
+          size={30}
+          color={selectedIcon === "cart" ? "#ffffff" : "#f0f0f0"} // Màu sáng khi chọn
+          style={selectedIcon === "cart" ? styles.selectedIcon : null} // Thêm hiệu ứng khi chọn
         />
       </TouchableOpacity>
       <TouchableOpacity
@@ -63,8 +66,9 @@ const Footer = () => {
       >
         <Ionicons
           name="person"
-          size={25}
-          color={selectedIcon === "profile" ? "#4A90E2" : "black"}
+          size={30}
+          color={selectedIcon === "profile" ? "#ffffff" : "#f0f0f0"} // Màu sáng khi chọn
+          style={selectedIcon === "profile" ? styles.selectedIcon : null} // Thêm hiệu ứng khi chọn
         />
       </TouchableOpacity>
     </View>
@@ -75,7 +79,7 @@ const styles = StyleSheet.create({
   container: {
     height: 60,
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: "#a10000", // Màu nền footer đậm hơn để tạo độ tương phản
     position: "absolute",
     bottom: 0,
     flexDirection: "row",
@@ -86,13 +90,16 @@ const styles = StyleSheet.create({
     // Thêm shadow cho phần trên của footer (iOS)
     shadowColor: "#000", // Màu của shadow
     shadowOffset: { width: 0, height: -2 }, // Đẩy shadow lên trên
-    shadowOpacity: 0.2, // Độ mờ của shadow
+    shadowOpacity: 0.3, // Độ mờ của shadow
     shadowRadius: 3, // Độ lan tỏa của shadow
     // Thêm shadow cho Android
     elevation: 5, // Độ đậm của shadow trên Android
   },
   icon: {
     padding: 10,
+  },
+  selectedIcon: {
+    transform: [{ scale: 1.2 }], // Phóng to icon khi chọn
   },
 });
 

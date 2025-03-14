@@ -84,6 +84,7 @@ const CurrentOrders = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F7F7F7", // Lighter background for consistency with the header
+    paddingBottom: 20,
   },
   statusContainer: {
     flexDirection: "row",
@@ -93,20 +94,20 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 14,
-    color: "#2C3E50", // Chỉnh lại màu sắc cho đậm hơn (màu xám tối hơn)
+    color: "white", // Chỉnh lại màu sắc cho đậm hơn (màu xám tối hơn)
     fontWeight: "bold", // Thêm font-weight để làm chữ đậm
   },
 
   statusButton: {
-    backgroundColor: "#A5D8FF", // Giữ nguyên màu nền
+    backgroundColor: "#d32f2f", // Màu nền nút là màu đỏ chủ đạo
     borderRadius: 12,
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 12,
     fontSize: 14,
     textAlign: "center",
-    color: "#2C3E50", // Giữ màu chữ ở đây cho rõ ràng
+    color: "#FFFFFF", // Màu chữ là trắng
     borderColor: "#ccc",
-    // Bạn có thể thử thay màu nền và viền để làm cho nó nổi bật hơn
+    borderWidth: 1, // Thêm viền nhẹ để làm nổi bật các nút
   },
 
   orderCard: {
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
   cancel: {
     paddingVertical: 6,
     paddingHorizontal: 16,
-    backgroundColor: "#E74C3C",
+    backgroundColor: "#E74C3C", // Red cancel button
     borderRadius: 25,
     alignSelf: "flex-end",
     shadowColor: "#000",

@@ -10,7 +10,7 @@ import {
   Text,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Checkbox } from "react-native-paper";
 
@@ -18,31 +18,44 @@ const { height } = Dimensions.get("window");
 
 const Cart = () => {
   const navigation = useNavigation();
-  const [quantity, setQuantity] = useState(1);
-  const [isSelected, setIsSelected] = useState(false);
 
-  // Thêm một danh sách các mặt hàng trong giỏ hàng (dùng để tính tổng giá)
-  const items = [
-    { id: 1, name: "Labubu - Limited Edition", price: 365000, quantity: 2 },
-    { id: 2, name: "Labubu - Limited Edition2", price: 365000, quantity: 1 },
-  ];
+  const [items, setItems] = useState([
+    { id: 1, name: "Labubu - Limited Edition", price: 365000, quantity: 1 },
+    { id: 2, name: "Labubu - Limited Edition 2", price: 365000, quantity: 2 },
+  ]);
+  const [selectedItems, setSelectedItems] = useState({});
+  const [totalPrice, setTotalPrice] = useState(0);
 
-  // Tính tổng giá
-  const totalPrice = items.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  useEffect(() => {
+    const total = items.reduce(
+      (sum, item) =>
+        selectedItems[item.id] ? sum + item.price * item.quantity : sum,
+      0
+    );
+    setTotalPrice(total);
+  }, [items, selectedItems]);
 
-  const handleQuantity = (value) => {
-    setQuantity((prevQuantity) => {
-      if (value === "plus") {
-        return prevQuantity + 1;
-      }
-      if (value === "minus" && prevQuantity > 1) {
-        return prevQuantity - 1;
-      }
-      return prevQuantity;
-    });
+  const handleQuantity = (id, action) => {
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              quantity:
+                action === "plus"
+                  ? item.quantity + 1
+                  : Math.max(1, item.quantity - 1),
+            }
+          : item
+      )
+    );
+  };
+
+  const handleSelectItem = (id) => {
+    setSelectedItems((prevSelected) => ({
+      ...prevSelected,
+      [id]: !prevSelected[id],
+    }));
   };
 
   const paddingBottom = height - 80 - 100;
@@ -61,55 +74,61 @@ const Cart = () => {
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.listItem}>
-          {/* item 1 */}
-          <View style={styles.cartItem}>
-            <View style={styles.leftSection}>
-              <Checkbox
-                status={isSelected ? "checked" : "unchecked"}
-                onPress={() => setIsSelected(!isSelected)}
-                color="#0d0045"
-              />
-              <Image source={labubu} style={styles.image} />
-            </View>
-
-            <View style={styles.rightSection}>
-              <View style={styles.itemDetails}>
-                <Text style={styles.itemName}>Labubu - Limited Edition</Text>
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Labubu, đen, size S"
-                  placeholderTextColor="#888"
+          {items.map((item) => (
+            <View key={item.id} style={styles.cartItem}>
+              <View style={styles.leftSection}>
+                <Checkbox
+                  status={selectedItems[item.id] ? "checked" : "unchecked"}
+                  onPress={() => handleSelectItem(item.id)}
+                  color="#a10000" // Set checkbox color to red
                 />
+                <Image source={labubu} style={styles.image} />
               </View>
 
-              <View style={styles.priceAndQuantity}>
-                <Text style={styles.price}>365.000Đ</Text>
-                <View style={styles.quantityContainer}>
-                  <TouchableOpacity
-                    onPress={() => handleQuantity("minus")}
-                    style={styles.quantityButton}
-                  >
-                    <FontAwesome5 name="minus" style={styles.icon} />
-                  </TouchableOpacity>
-                  <Text style={styles.quantityText}>{quantity}</Text>
-                  <TouchableOpacity
-                    onPress={() => handleQuantity("plus")}
-                    style={styles.quantityButton}
-                  >
-                    <FontAwesome5 name="plus" style={styles.icon} />
-                  </TouchableOpacity>
+              <View style={styles.rightSection}>
+                <View style={styles.itemDetails}>
+                  <Text style={styles.itemName}>{item.name}</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Labubu, đen, size S"
+                    placeholderTextColor="#888"
+                  />
+                </View>
+
+                <View style={styles.priceAndQuantity}>
+                  <Text style={styles.price}>
+                    {item.price.toLocaleString()} Đ
+                  </Text>
+                  <View style={styles.quantityContainer}>
+                    <TouchableOpacity
+                      onPress={() => handleQuantity(item.id, "minus")}
+                      style={styles.quantityButton}
+                    >
+                      <FontAwesome5 name="minus" style={styles.icon} />
+                    </TouchableOpacity>
+                    <Text style={styles.quantityText}>{item.quantity}</Text>
+                    <TouchableOpacity
+                      onPress={() => handleQuantity(item.id, "plus")}
+                      style={styles.quantityButton}
+                    >
+                      <FontAwesome5 name="plus" style={styles.icon} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
+          ))}
         </View>
       </ScrollView>
 
-      {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.totalLabel}>Total:</Text>
         <Text style={styles.totalPrice}>{totalPrice.toLocaleString()} Đ</Text>
-        <TouchableOpacity style={styles.checkoutButton}>
+        <TouchableOpacity
+          style={styles.checkoutButton}
+          onPress={() => navigation.navigate("Checkout")}
+          disabled={totalPrice === 0}
+        >
           <Text style={styles.checkoutText}>Checkout</Text>
         </TouchableOpacity>
       </View>
@@ -120,43 +139,36 @@ const Cart = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F7F7", // Lighter background for consistency
+    backgroundColor: "#F7F7F7",
   },
   header: {
     height: 140,
-    // backgroundColor: "white",
-    backgroundColor: "#A5D8FF",
+    backgroundColor: "#a10000", // Set header background to the main red color
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 40,
   },
   back: {
-    color: "black",
+    color: "white",
     fontSize: 22,
   },
   cart: {
     flex: 1,
     fontSize: 26,
     fontWeight: "bold",
-    color: "black",
+    color: "white",
     textAlign: "center",
   },
   scrollView: {
     flex: 1,
-    backgroundColor: "#F7F7F7", // Light background color, similar to CurrentOrders
-
+    backgroundColor: "#F7F7F7",
     paddingTop: 10,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    // paddingHorizontal: 15,
   },
   listItem: {
     flex: 1,
   },
   cartItem: {
-    maxWidth: "95%",
     backgroundColor: "#FFFFFF",
     padding: 15,
     marginVertical: 10,
@@ -168,9 +180,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     flexDirection: "row",
-    flexShrink: 1,
     minHeight: 160,
-    maxHeight: 200, // Prevent the item from being too tall
   },
   leftSection: {
     flexDirection: "row",
@@ -192,23 +202,17 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#2C3E50", // Dark blue for text
+    color: "#2C3E50",
     marginBottom: 15,
-    whiteSpace: "nowrap", // Ngăn không cho văn bản xuống dòng
-    overflow: "hidden", // Ẩn phần văn bản vượt ra ngoài
-    textOverflow: "ellipsis", // Hiển thị "..." khi văn bản quá dài
-    maxWidth: "100%",
   },
-
   textInput: {
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "#DCDCDC", // Lighter gray border color
+    borderColor: "#DCDCDC",
     borderRadius: 8,
     fontSize: 14,
     color: "#333",
-    marginBottom: 10, // Added some space between text input and next section
   },
   priceAndQuantity: {
     flexDirection: "row",
@@ -219,58 +223,61 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#2C3E50", // Dark blue for the price to match overall theme
+    color: "#2C3E50",
   },
   quantityContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5", // Light gray background for the quantity container
+    backgroundColor: "#f5f5f5",
     borderRadius: 8,
     paddingVertical: 5,
   },
   quantityButton: {
     paddingHorizontal: 12,
-    paddingVertical: 5,
   },
   icon: {
     fontSize: 16,
-    color: "#2C3E50", // Dark blue for icons
+    color: "#2C3E50",
   },
-  quantityText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2C3E50", // Dark blue text for quantity, same as item name and price
-    marginHorizontal: 10,
-  },
-  // Footer
   footer: {
-    backgroundColor: "#fff",
+    height: 80,
+    backgroundColor: "#a10000", // Footer background set to red
     borderTopWidth: 1,
     borderTopColor: "#ddd",
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
-    height: 80,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   totalLabel: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#2C3E50",
+    color: "#FFFFFF", // White text for total label to stand out
   },
   totalPrice: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    // color: "#FF914D",
-    color: "#E74C3C",
+    color: "#FFD700", // Yellow for total price for emphasis
   },
   checkoutButton: {
-    backgroundColor: "#0d0045",
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+    backgroundColor: "#ffffff", // White background for checkout button
+    paddingVertical: 12,
+    paddingHorizontal: 25,
     borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
   checkoutText: {
-    color: "#fff",
+    color: "#a10000", // Set checkout button text to red
     fontWeight: "bold",
     fontSize: 16,
   },

@@ -64,7 +64,10 @@ const ProfileScreen = () => {
       <View style={styles.wrap} />
       {/* Sign out section */}
       <View style={styles.signOut}>
-        <TouchableOpacity style={styles.signOutButton}>
+        <TouchableOpacity
+          style={styles.signOutButton}
+          onPress={() => navigation.navigate("Login")}
+        >
           <Ionicons name="log-out-outline" size={20} color="#fff" />
           <Text style={styles.signOutText}>Đăng xuất</Text>
         </TouchableOpacity>
@@ -93,8 +96,8 @@ const styles = StyleSheet.create({
   // Header style
   headerContainer: {
     width: "100%",
-    height: 140,
-    backgroundColor: "#A5D8FF",
+    height: 160,
+    backgroundColor: "#a00000",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     position: "relative",
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#2C3E50",
+    color: "red",
   },
   userInfoPhone: {
     fontSize: 16,
@@ -130,7 +133,7 @@ const styles = StyleSheet.create({
   userInfoName: {
     fontSize: 18,
 
-    color: "#2C3E50",
+    color: "#666",
   },
 
   // Spacer
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
   signOutButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#E74C3C",
+    backgroundColor: "#d32f2f",
     paddingVertical: 10,
     paddingHorizontal: 25,
     borderRadius: 8,

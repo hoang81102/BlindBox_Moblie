@@ -60,19 +60,19 @@ const styles = StyleSheet.create({
     height: 180, // Increased height for a more spacious header
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#A5D8FF", // Light blue background
-    borderBottomColor: "#4C9AFF", // Lighter blue bottom border
-    borderBottomWidth: 0.6,
+    backgroundColor: "#a10000", // Red background (your main color)
+    borderBottomColor: "#c12a28", // Darker red bottom border
+    borderBottomWidth: 1,
     shadowColor: "#000", // Shadow effect
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 5, // Elevated shadow for Android
   },
   title: {
-    fontSize: 26, // Larger font size for emphasis
+    fontSize: 28, // Larger font size for emphasis
     fontWeight: "bold",
-    color: "#2C3E50", // Dark gray text for readability
+    color: "#FFFFFF", // White text for title
     marginBottom: 20,
   },
   statusWrapper: {
@@ -90,10 +90,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 10, // Added padding for easier tapping
+    paddingVertical: 12, // Added padding for easier tapping
   },
   active: {
-    backgroundColor: "#4C9AFF", // Active state with a bright blue background
+    backgroundColor: "#d32f2f", // Active state with a bright red background
     borderBottomWidth: 4,
     borderBottomColor: "#FFFFFF", // White border at the bottom when active
   },

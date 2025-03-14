@@ -57,17 +57,18 @@ const styles = StyleSheet.create({
   statusButton: {
     borderWidth: 0.8,
     borderRadius: 12,
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 12,
     fontSize: 14,
     textAlign: "center",
-    color: "#333",
-    borderColor: "#ccc",
-    backgroundColor: "#A5D8FF", // Light blue matching the header
+    color: "#FFFFFF", // Color of text inside the button (white)
+    backgroundColor: "#d32f2f", // Red background matching the header
+    borderColor: "#fff", // White border to stand out
   },
   statusText: {
     fontSize: 14,
-    color: "#2C3E50", // Dark gray for status text
+    color: "#FFFFFF", // White text for better visibility
+    fontWeight: "bold", // Bold text for emphasis
   },
   orderCard: {
     maxWidth: "95%",
