@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { Checkbox } from "react-native-paper"; // Dùng Checkbox từ react-native-paper
+import { RadioButton } from "react-native-paper"; // Chỉ cần RadioButton
 
-const Delivery = () => {
+const Delivery = ({ onSelectShipping }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
-  const handleSelectOption = (option) => {
+  const handleSelectOption = (option, price) => {
     setSelectedOption(option);
+    onSelectShipping(price); // Gửi giá trị về `Checkout.js`
   };
 
   return (
@@ -21,11 +22,12 @@ const Delivery = () => {
           selectedOption === "GHN" && styles.optionContainerActive,
         ]}
         activeOpacity={0.8}
-        onPress={() => handleSelectOption("GHN")}
+        onPress={() => handleSelectOption("GHN", 50000)}
       >
-        <Checkbox
-          status={selectedOption === "GHN" ? "checked" : "unchecked"} // Sử dụng status để chọn
-          onPress={() => handleSelectOption("GHN")}
+        <RadioButton
+          status={selectedOption === "GHN" ? "checked" : "unchecked"}
+          onPress={() => handleSelectOption("GHN", 50000)}
+          color="red"
         />
         <View style={styles.optionDetails}>
           <Text style={styles.optionTitle}>GHN Express</Text>
@@ -42,11 +44,12 @@ const Delivery = () => {
           selectedOption === "Store" && styles.optionContainerActive,
         ]}
         activeOpacity={0.8}
-        onPress={() => handleSelectOption("Store")}
+        onPress={() => handleSelectOption("Store", 0)}
       >
-        <Checkbox
-          status={selectedOption === "Store" ? "checked" : "unchecked"} // Sử dụng status để chọn
-          onPress={() => handleSelectOption("Store")}
+        <RadioButton
+          status={selectedOption === "Store" ? "checked" : "unchecked"}
+          onPress={() => handleSelectOption("Store", 0)}
+          color="red"
         />
         <View style={styles.optionDetails}>
           <Text style={styles.optionTitle}>Pick at store</Text>
@@ -58,6 +61,7 @@ const Delivery = () => {
   );
 };
 
+export default Delivery;
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 5,
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
   },
   optionContainerActive: {
     backgroundColor: "#f0f0f0", // Màu xám nhạt
-    borderColor: "#007aff",
+    borderColor: "#d32f2f",
   },
   optionDetails: {
     flex: 1,
@@ -110,5 +114,3 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-
-export default Delivery;

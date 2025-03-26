@@ -25,8 +25,8 @@ const Footer = () => {
         <Ionicons
           name="home"
           size={30}
-          color={selectedIcon === "home" ? "#ffffff" : "#f0f0f0"} // Màu sáng khi chọn
-          style={selectedIcon === "home" ? styles.selectedIcon : null} // Thêm hiệu ứng khi chọn
+          color={selectedIcon === "home" ? "#ffffff" : "#f0f0f0"}
+          style={selectedIcon === "home" ? styles.selectedIcon : null}
         />
       </TouchableOpacity>
       <TouchableOpacity
@@ -39,8 +39,8 @@ const Footer = () => {
         <Ionicons
           name="time"
           size={30}
-          color={selectedIcon === "activity" ? "#ffffff" : "#f0f0f0"} // Màu sáng khi chọn
-          style={selectedIcon === "activity" ? styles.selectedIcon : null} // Thêm hiệu ứng khi chọn
+          color={selectedIcon === "activity" ? "#ffffff" : "#f0f0f0"}
+          style={selectedIcon === "activity" ? styles.selectedIcon : null}
         />
       </TouchableOpacity>
       <TouchableOpacity
@@ -53,8 +53,8 @@ const Footer = () => {
         <Ionicons
           name="cart"
           size={30}
-          color={selectedIcon === "cart" ? "#ffffff" : "#f0f0f0"} // Màu sáng khi chọn
-          style={selectedIcon === "cart" ? styles.selectedIcon : null} // Thêm hiệu ứng khi chọn
+          color={selectedIcon === "cart" ? "#ffffff" : "#f0f0f0"}
+          style={selectedIcon === "cart" ? styles.selectedIcon : null}
         />
       </TouchableOpacity>
       <TouchableOpacity
@@ -67,8 +67,8 @@ const Footer = () => {
         <Ionicons
           name="person"
           size={30}
-          color={selectedIcon === "profile" ? "#ffffff" : "#f0f0f0"} // Màu sáng khi chọn
-          style={selectedIcon === "profile" ? styles.selectedIcon : null} // Thêm hiệu ứng khi chọn
+          color={selectedIcon === "profile" ? "#ffffff" : "#f0f0f0"}
+          style={selectedIcon === "profile" ? styles.selectedIcon : null}
         />
       </TouchableOpacity>
     </View>

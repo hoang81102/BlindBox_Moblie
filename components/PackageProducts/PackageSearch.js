@@ -3,13 +3,9 @@ import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const PackageSearch = () => {
+const PackageSearch = ({ setSearchTerm, searchTerm }) => {
   const [value, setValue] = useState(""); // Quản lý trạng thái cho giá trị của TextInput
   const navigation = useNavigation();
-
-  const onChangeText = (text) => {
-    setValue(text); // Cập nhật giá trị khi người dùng nhập văn bản
-  };
 
   return (
     <View style={styles.container}>
@@ -23,24 +19,23 @@ const PackageSearch = () => {
         style={styles.input}
         placeholder="What are you searching?"
         placeholderTextColor="#999"
-        value={value}
-        onChangeText={onChangeText}
+        value={searchTerm}
+        onChangeText={setSearchTerm}
       />
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
     paddingTop: 10,
-    backgroundColor: "#f1f1f1", // Nền màu trắng để nổi bật phần tìm kiếm
-    borderRadius: 10, // Bo tròn các góc
+    backgroundColor: "#f1f1f1",
+    borderRadius: 10,
   },
   backButton: {
-    marginRight: 10, // Khoảng cách giữa nút quay lại và TextInput
+    marginRight: 10,
   },
   input: {
     borderWidth: 1,
@@ -48,10 +43,10 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderRadius: 12,
-    backgroundColor: "#f1f1f1", // Màu nền sáng cho TextInput
+    backgroundColor: "#f1f1f1",
     paddingHorizontal: 15,
     fontSize: 16,
-    color: "#333", // Màu chữ đậm dễ đọc
+    color: "#333",
   },
 });
 

@@ -11,9 +11,9 @@ const DetailProductHeader = () => {
           style={styles.iconContainer}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back-circle-outline" size={28} color="black" />
+          <Ionicons name="arrow-back-circle-outline" size={28} color="white" />
         </TouchableOpacity>
-        <Text style={styles.title}>Order Detail</Text>
+        <Text style={styles.title}>Product Detail</Text>
       </View>
     </View>
   );
@@ -21,17 +21,13 @@ const DetailProductHeader = () => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 20,
-    flexDirection: "column",
-    justifyContent: "flex-start", // Make sure it doesn't push to the end
-    backgroundColor: "#f5f5f5", // Light background color to make header visible
-    height: 100, // Ensure there's enough space for the header content
+    paddingVertical: 40,
+    justifyContent: "flex-start",
+    backgroundColor: "#a10000",
   },
   component: {
     flexDirection: "row",
     alignItems: "center",
-    // backgroundColor: "pink",
   },
   iconContainer: {
     // paddingRight: 15,
@@ -40,7 +36,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 22,
     fontWeight: "600",
-    color: "black",
+    color: "white",
     textAlign: "center",
     marginRight: 15,
   },

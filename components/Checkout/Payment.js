@@ -2,49 +2,48 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-const Payment = () => {
+const Payment = ({ setPaymentType }) => {
   const [selected, setSelected] = useState("");
   const handleSelected = (value) => {
     setSelected(value);
+    setPaymentType(value);
+    console.log("Loại thanh toán: ", value);
   };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Payment Method</Text>
 
       <View style={styles.paymentOptionContainer}>
-        {/* Cash Option */}
+        {/* Bank Option */}
         <TouchableOpacity
           style={[
             styles.optionContainer,
-            selected === "cash" && styles.optionContainerActive,
+            selected === "bank" && styles.optionContainerActive,
           ]}
-          onPress={() => handleSelected("cash")}
+          onPress={() => handleSelected("bank")}
         >
           <View style={styles.option}>
             <Ionicons
-              name="cash-outline"
+              name="card-outline"
               size={24}
-              style={[
-                styles.icon,
-                selected === "cash" && { color: "#fff" }, // Change icon color when selected
-              ]}
+              style={[styles.icon, selected === "bank" && { color: "#fff" }]}
             />
             <Text
               style={[
                 styles.optionTitle,
-                selected === "cash" && { color: "#fff" }, // Change title color when selected
+                selected === "bank" && { color: "#fff" },
               ]}
             >
-              Cash
+              Bank
             </Text>
           </View>
           <Text
             style={[
               styles.optionDescription,
-              selected === "cash" && { color: "#fff" }, // Change description color when selected
+              selected === "bank" && { color: "#fff" },
             ]}
           >
-            Pay cash when the shipper arrives at the destination
+            Pay via bank transfer before receiving the order
           </Text>
         </TouchableOpacity>
 
@@ -60,15 +59,12 @@ const Payment = () => {
             <Ionicons
               name="wallet-outline"
               size={24}
-              style={[
-                styles.icon,
-                selected === "wallet" && { color: "#fff" }, // Change icon color when selected
-              ]}
+              style={[styles.icon, selected === "wallet" && { color: "#fff" }]}
             />
             <Text
               style={[
                 styles.optionTitle,
-                selected === "wallet" && { color: "#fff" }, // Change title color when selected
+                selected === "wallet" && { color: "#fff" },
               ]}
             >
               Wallet
@@ -77,7 +73,7 @@ const Payment = () => {
           <Text
             style={[
               styles.optionDescription,
-              selected === "wallet" && { color: "#fff" }, // Change description color when selected
+              selected === "wallet" && { color: "#fff" },
             ]}
           >
             Use wallet of store to pay
@@ -92,37 +88,37 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 5,
     paddingHorizontal: 10,
-    backgroundColor: "#f7f7f7", // Light background for the screen
+    backgroundColor: "#f7f7f7",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 5,
-    color: "#333", // Dark text for the title
+    color: "#333",
   },
   paymentOptionContainer: {
     marginTop: 5,
     flexDirection: "row",
-    justifyContent: "space-between", // Align options side by side with spacing
+    justifyContent: "space-around",
   },
   optionContainer: {
-    backgroundColor: "#ffffff", // White background for the options
+    backgroundColor: "#ffffff",
     borderRadius: 8,
     paddingVertical: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     marginBottom: 15,
-    shadowColor: "#000", // Light shadow for depth
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    width: "45%", // Set width for each option
+    width: "45%",
   },
   optionContainerActive: {
-    backgroundColor: "#a10000", // Red background for active selection
+    backgroundColor: "#a10000",
     borderWidth: 2,
-    borderColor: "#fff", // White border for active state
-    shadowColor: "#a10000", // Red shadow for active state
+    borderColor: "#fff",
+    shadowColor: "#a10000",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.2,
     shadowRadius: 10,
@@ -134,16 +130,16 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
-    color: "#333", // Icon color will be white for better contrast
+    color: "#333",
   },
   optionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#333", // Title color will be white for better contrast
+    color: "#333",
   },
   optionDescription: {
     fontSize: 14,
-    color: "#666", // Light color for the description
+    color: "#666",
     marginTop: 5,
   },
 });

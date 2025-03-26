@@ -1,42 +1,87 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-const CheckoutFooter = () => {
+const CheckoutFooter = ({
+  subtotal,
+  shippingFee,
+  discount,
+  total,
+  onCheckout,
+}) => {
+  const totalPrice = subtotal + shippingFee - discount;
+
   return (
     <View style={styles.container}>
-      <View style={styles.component}>
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalLabel}>Total: </Text>
-          <Text style={styles.totalAmount}>125.000 VNĐ</Text>
+      <View style={styles.priceDetails}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Subtotal:</Text>
+          <Text style={styles.amount}>{subtotal.toLocaleString()} VNĐ</Text>
         </View>
 
-        <TouchableOpacity style={styles.checkoutButton} activeOpacity={0.7}>
-          <Text style={styles.checkoutButtonText}>Checkout</Text>
-        </TouchableOpacity>
+        <View style={styles.row}>
+          <Text style={styles.label}>Shipping Fee:</Text>
+          <Text style={styles.amount}>{shippingFee.toLocaleString()} VNĐ</Text>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Discount:</Text>
+          <Text style={styles.amount}>- {discount.toLocaleString()} VNĐ</Text>
+        </View>
+        <View style={styles.divider} />
+
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalLabel}>Total:</Text>
+          <Text style={styles.totalAmount}>
+            {totalPrice.toLocaleString()} VNĐ
+          </Text>
+        </View>
       </View>
+
+      <TouchableOpacity
+        style={styles.checkoutButton}
+        activeOpacity={0.7}
+        onPress={onCheckout}
+      >
+        <Text style={styles.checkoutButtonText}>Checkout</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    paddingVertical: 17,
+    paddingVertical: 15,
     borderTopWidth: 1,
     borderTopColor: "#ddd",
     flexDirection: "column",
+    paddingHorizontal: 20,
   },
-  component: {
+  priceDetails: {
+    marginBottom: 10,
+  },
+  row: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    paddingHorizontal: 10,
-    // alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 5,
+  },
+  label: {
+    fontSize: 16,
+    color: "#555",
+  },
+  amount: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    marginVertical: 8,
   },
   totalContainer: {
     flexDirection: "row",
-    // justifyContent: "space-between",
-    paddingTop: 10,
-    flex: 1, // Chiếm không gian còn lại
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   totalLabel: {
     fontSize: 18,
@@ -51,15 +96,14 @@ const styles = StyleSheet.create({
   checkoutButton: {
     backgroundColor: "#a00000",
     paddingVertical: 12,
-    paddingHorizontal: 40,
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 3, // Tạo bóng cho nút
-    shadowColor: "#000", // Màu bóng
-    shadowOffset: { width: 0, height: 5 }, // Vị trí bóng
-    shadowOpacity: 0.2, // Độ mờ của bóng
-    shadowRadius: 10, // Độ lan tỏa của bóng
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
   },
   checkoutButtonText: {
     color: "#fff",

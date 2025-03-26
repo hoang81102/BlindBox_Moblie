@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import SpinWheelModal from "./SpinWheelModal";
 
 const services = [
-  { id: 1, icon: "shopping-cart", title: "Retail" },
+  { id: 1, icon: "shopping-cart", title: "Box" },
   { id: 2, icon: "box", title: "Package" },
   { id: 3, icon: "spinner", title: "Lucky Wheel" },
 ];
@@ -20,7 +20,7 @@ const Body = () => {
 
   const handlePress = (title) => {
     switch (title) {
-      case "Retail":
+      case "Box":
         navigation.navigate("RetailProducts");
         break;
       case "Package":

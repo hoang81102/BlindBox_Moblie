@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Màu nền tối cho modal
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     position: "absolute",
     top: 0,
     left: 0,
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     zIndex: 9999,
   },
   modalContent: {
-    backgroundColor: "#a10000", // Màu chủ đạo #a10000
+    backgroundColor: "#a10000",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    color: "white", // Màu chữ trắng để nổi bật trên nền đỏ
+    color: "white",
     marginBottom: 20,
   },
   image: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   spinText: {
     fontSize: 18,
-    color: "white", // Màu chữ trắng cho nút Spin
+    color: "white",
     fontWeight: "bold",
   },
   closeButton: {
@@ -222,12 +222,12 @@ const styles = StyleSheet.create({
   },
   closeText: {
     fontSize: 30,
-    color: "white", // Màu chữ trắng cho nút Close
+    color: "white",
     fontWeight: "bold",
   },
   resultText: {
     fontSize: 18,
-    color: "white", // Màu chữ trắng cho kết quả
+    color: "white",
     marginTop: 20,
   },
 });

@@ -1,45 +1,135 @@
-import React from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Image,
+  Alert,
+} from "react-native";
 import labubu from "../../assets/labubu.png";
+import { useNavigation } from "@react-navigation/native";
+import { getOrderCompleted } from "../../services/OrderService"; // Đảm bảo getOrderCompleted trả về đúng dạng
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const OrderHistory = () => {
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [status, setStatus] = useState("completed");
+  const navigation = useNavigation();
+
+  // Lấy userId từ AsyncStorage
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const storedUserId = await AsyncStorage.getItem("userId");
+      setUserId(storedUserId);
+    };
+    fetchUserId();
+  }, []);
+
+  // Lấy danh sách đơn hàng đã hoàn thành và lọc theo userId
+  useEffect(() => {
+    const fetchCompletedOrders = async () => {
+      try {
+        const response = await getOrderCompleted();
+        console.log("API Response for completed orders:", response);
+        if (response && response.items) {
+          // Lọc các đơn hàng có accountId === userId
+          const filteredOrders = response.items.filter(
+            (order) => order.accountId === userId
+          );
+          setCompletedOrders(filteredOrders);
+        } else {
+          setCompletedOrders([]);
+        }
+      } catch (error) {
+        console.error("Error fetching completed orders: ", error);
+      }
+    };
+
+    if (userId) {
+      fetchCompletedOrders();
+    }
+  }, [userId]);
+
+  const handleGetOrderDetails = async (orderId) => {
+    try {
+      console.log("Fetching details for order ID:", orderId);
+      // Handle navigation to order details page if needed
+    } catch (error) {
+      console.error("Error fetching order details: ", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.statusContainer}>
-        <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Delivered</Text>
+        <TouchableOpacity
+          style={styles.statusButton}
+          onPress={() => setStatus("completed")}
+        >
+          <Text style={styles.statusText}>Completed</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.statusButton}>
+        <TouchableOpacity
+          style={styles.statusButton}
+          onPress={() => setStatus("canceled")}
+        >
           <Text style={styles.statusText}>Canceled</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.statusButton}>
-          <Text style={styles.statusText}>Refunded</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.orderCard}>
-        <View style={styles.imageContainer}>
-          <Image source={labubu} style={styles.image} />
-        </View>
-        <View>
-          <Text style={styles.title}>Labubu - Limited Edition</Text>
-          <Text style={styles.text}>Size S</Text>
-          <View style={styles.subTotal}>
-            <Text style={styles.price}>544,000 VND</Text>
-            <Text style={styles.text}> * 1</Text>
-          </View>
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Total:</Text>
-            <Text style={styles.total}> 544,000 VND </Text>
-          </View>
-          <TouchableOpacity style={styles.received}>
-            <Text style={styles.receivedText}>Status: </Text>
-            <Text style={[styles.receivedText, { fontWeight: "bold" }]}>
-              Delivered
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
+      {status === "completed" && (
+        <>
+          {Array.isArray(completedOrders) && completedOrders.length > 0 ? (
+            completedOrders.map((order) => (
+              <TouchableOpacity
+                key={order.orderId}
+                style={styles.orderCard}
+                onPress={() => handleGetOrderDetails(order.orderId)}
+              >
+                <View style={styles.imageContainer}>
+                  <Image source={labubu} style={styles.image} />
+                </View>
+                <View>
+                  <Text
+                    style={styles.title}
+                  >{`Order ID: ${order.orderCode}`}</Text>
+                  <Text style={styles.text}>Size S</Text>
+                  <View style={styles.subTotal}>
+                    <Text
+                      style={styles.price}
+                    >{`${order.priceTotal} VND`}</Text>
+                    <Text style={styles.text}> * 1</Text>
+                  </View>
+                  <View style={styles.totalContainer}>
+                    <Text style={styles.totalLabel}>Total:</Text>
+                    <Text style={styles.total}>
+                      {" "}
+                      {`${order.priceTotal} VND`}{" "}
+                    </Text>
+                  </View>
+                  <View style={styles.received}>
+                    <Text style={styles.receivedText}>Status: </Text>
+                    <Text style={[styles.receivedText, { fontWeight: "bold" }]}>
+                      Delivered
+                    </Text>
+                  </View>
+                  {status === "completed" && (
+                    <TouchableOpacity
+                      style={styles.feedbackButton}
+                      onPress={() => navigation.navigate("Feedback")}
+                    >
+                      <Text style={styles.feedbackText}>Give Feedback</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.noOrdersText}>No completed orders</Text>
+          )}
+        </>
+      )}
     </View>
   );
 };
@@ -117,14 +207,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "#DCDCDC",
     marginBottom: 4,
   },
-
   price: {
     fontSize: 16,
     color: "#2C3E50",
     fontWeight: "bold",
     textAlign: "right",
   },
-
   totalContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -133,20 +221,17 @@ const styles = StyleSheet.create({
     borderBottomColor: "#DCDCDC",
     marginBottom: 6,
   },
-
   totalLabel: {
     fontSize: 14,
     color: "#2C3E50",
     fontWeight: "bold",
   },
-
   total: {
     fontSize: 16,
     color: "#2C3E50",
     fontWeight: "bold",
     textAlign: "right",
   },
-
   received: {
     flexDirection: "row",
   },
@@ -154,19 +239,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "black",
   },
-  cancel: {
-    flexDirection: "row",
+  feedbackButton: {
+    backgroundColor: "#d32f2f", // Blue background for feedback button
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  cancelText: {
-    fontSize: 14,
-    color: "#FF6347", // Red-orange for canceled status
+  feedbackText: {
+    fontSize: 16,
+    color: "#fff", // White text for better contrast
+    fontWeight: "bold",
   },
-  refund: {
-    flexDirection: "row",
-  },
-  refundText: {
-    fontSize: 14,
-    color: "#FFD700", // Yellow for refunded status
+  noOrdersText: {
+    fontSize: 18,
+    color: "gray",
+    textAlign: "center",
+    marginTop: 20,
   },
 });
 

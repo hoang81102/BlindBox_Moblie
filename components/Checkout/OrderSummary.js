@@ -1,72 +1,32 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import labubu from "../../assets/labubu.png";
-import { FontAwesome5 } from "@expo/vector-icons";
+import React from "react";
+import { View, ScrollView, Text, Image, StyleSheet } from "react-native";
 
-const OrderSummary = () => {
-  // State lưu trữ danh sách các đơn hàng
-  const [orders, setOrders] = useState([
-    {
-      id: 1,
-      title: "Labubu - Limited Edition",
-      description: "Product got by package A",
-      price: "125.000 VNĐ",
-      quantity: 1,
-    },
-  ]);
-
-  // Cập nhật số lượng của một đơn hàng cụ thể
-  const handleQuantity = (id, value) => {
-    setOrders((prevOrders) => {
-      return prevOrders.map((order) => {
-        if (order.id === id) {
-          return {
-            ...order,
-            quantity:
-              value === "plus"
-                ? order.quantity + 1
-                : order.quantity - 1 < 1
-                ? 1
-                : order.quantity - 1,
-          };
-        }
-        return order;
-      });
-    });
-  };
-
+const OrderSummary = ({ products }) => {
   return (
     <ScrollView style={styles.container}>
-      {orders.map((order) => (
-        <View key={order.id} style={styles.orderContainer}>
-          <Image source={labubu} style={styles.image} />
+      {products.map((product) => (
+        <View key={product.productId} style={styles.orderContainer}>
+          {" "}
+          {/* Sử dụng productId làm key */}
+          <Image
+            source={
+              product.imageUrl
+                ? { uri: String(product.imageUrl) }
+                : require("../../assets/popmart.jpg")
+            }
+            style={styles.image}
+          />
           <View style={styles.contentContainer}>
-            <Text style={styles.productTitle}>{order.title}</Text>
-            <Text style={styles.productDescription}>{order.description}</Text>
+            <Text style={styles.productTitle}>{product.name}</Text>{" "}
+            {/* Hiển thị tên */}
+            <Text style={styles.productDescription}>
+              {product.description}
+            </Text>{" "}
+            {/* Hiển thị mô tả */}
             <View style={styles.priceContainer}>
-              <Text style={styles.price}>{order.price}</Text>
-              <View style={styles.quantityContainer}>
-                <TouchableOpacity
-                  onPress={() => handleQuantity(order.id, "minus")}
-                  style={styles.quantityButton}
-                >
-                  <FontAwesome5 name="minus" style={styles.icon} />
-                </TouchableOpacity>
-                <Text style={styles.quantity}>{order.quantity}</Text>
-                <TouchableOpacity
-                  onPress={() => handleQuantity(order.id, "plus")}
-                  style={styles.quantityButton}
-                >
-                  <FontAwesome5 name="plus" style={styles.icon} />
-                </TouchableOpacity>
-              </View>
+              <Text style={styles.price}>{product.price} VNĐ</Text>
+              <Text style={styles.quantity}> * {product.quantity}</Text>{" "}
+              {/* Hiển thị số lượng */}
             </View>
           </View>
         </View>

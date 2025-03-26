@@ -1,61 +1,147 @@
-import { FontAwesome5 } from "@expo/vector-icons";
-import labubu from "../../assets/labubu.png";
+import React, { useState, useEffect } from "react";
 import {
   View,
+  Text,
   StyleSheet,
   Image,
-  TextInput,
-  ScrollView,
   TouchableOpacity,
-  Text,
+  Alert,
   Dimensions,
+  ScrollView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import {
+  getItemsInCartByUserId,
+  getInformationBlindBoxById,
+  getInformationPackageById,
+} from "../../services/CartService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { height } = Dimensions.get("window");
 
 const Cart = () => {
   const navigation = useNavigation();
-
-  const [items, setItems] = useState([
-    { id: 1, name: "Labubu - Limited Edition", price: 365000, quantity: 1 },
-    { id: 2, name: "Labubu - Limited Edition 2", price: 365000, quantity: 2 },
-  ]);
+  const [items, setItems] = useState([]); // Dữ liệu giỏ hàng từ API
   const [selectedItems, setSelectedItems] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
 
+  // Lấy giỏ hàng từ API khi component mount
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const userId = await AsyncStorage.getItem("userId");
+        if (userId) {
+          const cartData = await getItemsInCartByUserId(userId);
+          const updatedItems = await Promise.all(
+            cartData.map(async (item) => {
+              let productDetails;
+              // Kiểm tra blindBoxId và packageId
+              if (item.blindBoxId) {
+                productDetails = await getInformationBlindBoxById(
+                  item.blindBoxId
+                );
+              } else if (item.packageId) {
+                productDetails = await getInformationPackageById(
+                  item.packageId
+                );
+              }
+
+              const normalizedItem = {
+                cartId: item.cartId,
+                quantity: item.quantity,
+                price: productDetails?.price || productDetails?.packagePrice, // Nếu có giá, dùng giá đó
+                name:
+                  productDetails?.blindBoxName || productDetails?.packageName, // Tên sản phẩm
+                description: productDetails?.description || "", // Mô tả sản phẩm
+                image:
+                  productDetails?.blindBoxImages?.[0] ||
+                  productDetails?.packageImages?.[0] ||
+                  null,
+              };
+
+              return normalizedItem;
+            })
+          );
+          setItems(updatedItems);
+        }
+      } catch (error) {
+        console.error("Lỗi lấy giỏ hàng:", error);
+      }
+    };
+    fetchCart();
+  }, []);
+
+  // Tính tổng tiền của các sản phẩm được chọn
   useEffect(() => {
     const total = items.reduce(
       (sum, item) =>
-        selectedItems[item.id] ? sum + item.price * item.quantity : sum,
+        selectedItems[item.cartId] ? sum + item.price * item.quantity : sum,
       0
     );
     setTotalPrice(total);
   }, [items, selectedItems]);
 
-  const handleQuantity = (id, action) => {
+  // Xử lý tăng/giảm số lượng
+  const handleQuantity = (cartId, action) => {
     setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              quantity:
-                action === "plus"
-                  ? item.quantity + 1
-                  : Math.max(1, item.quantity - 1),
-            }
-          : item
-      )
+      prevItems.map((item) => {
+        if (item.cartId === cartId) {
+          let newQuantity =
+            action === "plus" ? item.quantity + 1 : item.quantity - 1;
+          if (newQuantity <= 0) {
+            Alert.alert(
+              "Xác nhận",
+              "Số lượng là 0, bạn có muốn xóa sản phẩm này không?",
+              [
+                { text: "Hủy", style: "cancel" },
+                {
+                  text: "Xóa",
+                  onPress: () => handleRemoveItem(cartId),
+                },
+              ]
+            );
+            return item;
+          }
+          return { ...item, quantity: newQuantity }; // Số lượng thay đổi trong state
+        }
+        return item;
+      })
     );
   };
 
-  const handleSelectItem = (id) => {
+  // Xử lý xóa sản phẩm khỏi giỏ hàng
+  const handleRemoveItem = (cartId) => {
+    setItems((prevItems) => prevItems.filter((item) => item.cartId !== cartId));
+  };
+
+  // Chọn/bỏ chọn sản phẩm
+  const handleSelectItem = (cartId) => {
     setSelectedItems((prevSelected) => ({
       ...prevSelected,
-      [id]: !prevSelected[id],
+      [cartId]: !prevSelected[cartId],
     }));
+  };
+
+  const handleCheckout = () => {
+    const selectedProducts = items.filter((item) => selectedItems[item.cartId]);
+
+    if (selectedProducts.length === 0) {
+      Alert.alert(
+        "Thông báo",
+        "Vui lòng chọn ít nhất một sản phẩm để thanh toán."
+      );
+      return;
+    }
+
+    // Chuyển các sản phẩm đã chọn sang Checkout với thông tin nguồn "cart"
+    navigation.navigate("Checkout", {
+      products: selectedProducts.map((product) => ({
+        ...product,
+        source: "cart", // Đánh dấu nguồn là "cart"
+      })),
+    });
   };
 
   const paddingBottom = height - 80 - 100;
@@ -66,7 +152,7 @@ const Cart = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesome5 name="arrow-left" style={styles.back} />
         </TouchableOpacity>
-        <Text style={styles.cart}>My Cart</Text>
+        <Text style={styles.cart}>Giỏ hàng của tôi</Text>
       </View>
 
       <ScrollView
@@ -75,40 +161,44 @@ const Cart = () => {
       >
         <View style={styles.listItem}>
           {items.map((item) => (
-            <View key={item.id} style={styles.cartItem}>
+            <View key={item.cartId} style={styles.cartItem}>
               <View style={styles.leftSection}>
                 <Checkbox
-                  status={selectedItems[item.id] ? "checked" : "unchecked"}
-                  onPress={() => handleSelectItem(item.id)}
-                  color="#a10000" // Set checkbox color to red
+                  status={selectedItems[item.cartId] ? "checked" : "unchecked"}
+                  onPress={() => handleSelectItem(item.cartId)}
+                  color="#a10000"
                 />
-                <Image source={labubu} style={styles.image} />
+                <Image
+                  source={
+                    item.image
+                      ? { uri: String(item.image) }
+                      : require("../../assets/popmart.jpg")
+                  }
+                  style={styles.image}
+                />
               </View>
 
               <View style={styles.rightSection}>
                 <View style={styles.itemDetails}>
                   <Text style={styles.itemName}>{item.name}</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Labubu, đen, size S"
-                    placeholderTextColor="#888"
-                  />
+                  <Text style={styles.price}>
+                    {item.price ? item.price.toLocaleString() : "Giá chưa có"} Đ
+                  </Text>
+                  {/* Hiển thị description của sản phẩm */}
+                  <Text style={styles.description}>{item.description}</Text>
                 </View>
 
                 <View style={styles.priceAndQuantity}>
-                  <Text style={styles.price}>
-                    {item.price.toLocaleString()} Đ
-                  </Text>
                   <View style={styles.quantityContainer}>
                     <TouchableOpacity
-                      onPress={() => handleQuantity(item.id, "minus")}
+                      onPress={() => handleQuantity(item.cartId, "minus")}
                       style={styles.quantityButton}
                     >
                       <FontAwesome5 name="minus" style={styles.icon} />
                     </TouchableOpacity>
                     <Text style={styles.quantityText}>{item.quantity}</Text>
                     <TouchableOpacity
-                      onPress={() => handleQuantity(item.id, "plus")}
+                      onPress={() => handleQuantity(item.cartId, "plus")}
                       style={styles.quantityButton}
                     >
                       <FontAwesome5 name="plus" style={styles.icon} />
@@ -122,14 +212,14 @@ const Cart = () => {
       </ScrollView>
 
       <View style={styles.footer}>
-        <Text style={styles.totalLabel}>Total:</Text>
+        <Text style={styles.totalLabel}>Tổng tiền:</Text>
         <Text style={styles.totalPrice}>{totalPrice.toLocaleString()} Đ</Text>
         <TouchableOpacity
           style={styles.checkoutButton}
-          onPress={() => navigation.navigate("Checkout")}
+          onPress={handleCheckout}
           disabled={totalPrice === 0}
         >
-          <Text style={styles.checkoutText}>Checkout</Text>
+          <Text style={styles.checkoutText}>Thanh toán</Text>
         </TouchableOpacity>
       </View>
     </View>

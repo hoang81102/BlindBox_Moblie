@@ -1,15 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import Notification from "./Notification";
 import { View, StyleSheet, Text } from "react-native";
 import Background from "./Background";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Header = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedFirstName = await AsyncStorage.getItem("firstName");
+      const storedLastName = await AsyncStorage.getItem("lastName");
+      setFirstName(storedFirstName || "");
+      setLastName(storedLastName || "");
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Background />
       <View style={styles.gradientBackground}>
-        <Text style={styles.text}> Hello, Thi Minh Đạt </Text>
+        <Text style={styles.text}>
+          Hello, {firstName}
+          {lastName}
+        </Text>
         <View style={styles.filter}>
           <SearchBar />
         </View>

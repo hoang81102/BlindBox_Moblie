@@ -2,9 +2,10 @@
   "expo": {
     "name": "BlindboxMobile",
     "slug": "BlindboxMobile",
+    "owner": "thiminhdat",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "scheme": "blindboxmobile",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -18,8 +19,14 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.thiminhdat.BlindboxMobile"
     },
-    "web": {}
+    "web": {},
+    "extra": {
+      "eas": {
+        "projectId": "3ddd4206-c9d4-43eb-99e6-74da5f546c47"
+      }
+    }
   }
 }

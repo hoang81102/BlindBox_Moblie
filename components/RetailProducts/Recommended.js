@@ -8,67 +8,47 @@ import {
   FlatList,
 } from "react-native";
 import labubu from "../../assets/labubu.jpg";
-import babythree from "../../assets/babythree.jpg";
-import hirono from "../../assets/hirono.jpg";
-import smiski from "../../assets/smiski.jpg";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const Recommended = () => {
-  const productList = [
-    {
-      id: 1,
-      image: labubu,
-      rating: 4.5,
-      name: "Labubu - Limited Edition",
-      price: "125000",
-    },
-    {
-      id: 2,
-      image: babythree,
-      rating: 4.5,
-      name: "Babythree - Limited Edition",
-      price: "125000",
-    },
-    {
-      id: 3,
-      image: hirono,
-      rating: 4.5,
-      name: "Hirono - Limited Edition",
-      price: "125000",
-    },
-    {
-      id: 4,
-      image: smiski,
-      rating: 4.5,
-      name: "Smiski  - Limited Edition",
-      price: "125000",
-    },
-  ];
-
+const Recommended = ({ recommendedList }) => {
   const navigation = useNavigation();
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
       onPress={() =>
-        navigation.navigate("DetailProduct", { productId: item.id })
+        navigation.navigate("DetailProduct", {
+          blindBoxId: item.blindBoxId,
+          blindBoxName: item.blindBoxName,
+          blindBoxType: "BlindBox",
+          blindBoxPrice: item.price,
+          blindBoxDescription: item.description,
+          blindBoxImageUrl: String(item.imageUrl || labubu),
+          blindBoxStock: item.stock,
+        })
       }
     >
-      <Image source={item.image} style={styles.image} />
+      {/* Kiểm tra nếu item.category tồn tại trước khi truy cập categoryImage */}
+      <Image
+        source={{ uri: String(item.imageUrl) || labubu }}
+        style={styles.image}
+      />
+
       <View style={styles.infoContainer}>
-        {/* Rating */}
+        {/* Kiểm tra nếu item.rating tồn tại */}
         <View style={styles.rating}>
-          <Text style={styles.ratingText}>{item.rating} </Text>
+          <Text style={styles.ratingText}>{item.rating || "No rating"}</Text>
           <FontAwesome5 name="star" size={14} color="#f1c40f" />
         </View>
-        {/* Product Name */}
+        {/* Kiểm tra nếu item.blindBoxName tồn tại */}
         <Text style={styles.productName} numberOfLines={2}>
-          {item.name}
+          {item.blindBoxName || "No product name"}
         </Text>
-        {/* Product Price */}
+        {/* Kiểm tra nếu item.price tồn tại */}
         <Text style={styles.productPrice}>
-          {item.price.replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VNĐ/Box
+          {item.price}
+          VNĐ/Box
         </Text>
       </View>
     </TouchableOpacity>
@@ -78,14 +58,16 @@ const Recommended = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Recommended</Text>
       <FlatList
-        data={productList}
-        keyExtractor={(item) => item.id.toString()}
+        data={recommendedList}
+        keyExtractor={(item) => item.blindBoxId?.toString() || item.blindBoxId} // Sử dụng blindBoxId làm key
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
       />
     </View>
   );
 };
+
+export default Recommended;
 
 const styles = StyleSheet.create({
   container: {
@@ -96,7 +78,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#f3f3f3", // Color for header
+    color: "#f3f3f3",
     marginBottom: 15,
   },
   card: {
@@ -108,17 +90,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     marginBottom: 20,
-    flexDirection: "row", // Make sure image and info are aligned horizontally
+    flexDirection: "row",
     alignItems: "center",
     padding: 10,
   },
   image: {
-    width: "40%", // Image takes 40% of the card width
+    width: "40%",
     height: 120,
     borderRadius: 10,
   },
   infoContainer: {
-    marginLeft: 15, // Space between image and product info
+    marginLeft: 15,
     flex: 1,
   },
   rating: {
@@ -141,8 +123,6 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#e74c3c", // Red color for price to make it stand out
+    color: "#e74c3c",
   },
 });
-
-export default Recommended;

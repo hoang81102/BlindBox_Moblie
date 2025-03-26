@@ -6,31 +6,51 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import labubu from "../../assets/labubu.png";
-import babythree from "../../assets/babythree.jpg";
-import hirono from "../../assets/hirono.jpg";
-import dimoo from "../../assets/dimoo.jpg";
-import smiski from "../../assets/smiski.jpg";
-const Category = () => {
-  const categoryList = [
-    { id: 1, title: "Baby Three", icon: babythree },
-    { id: 2, title: "Labubu", icon: labubu },
-    { id: 3, title: "Hirono", icon: hirono },
-    { id: 4, title: "Dimoo", icon: dimoo },
-    { id: 5, title: "Smiski", icon: smiski },
-  ];
+import { getRetailProductCategory } from "../../services/RetailProductService";
+import { useEffect, useState } from "react";
+const Category = ({ setSelectCategory }) => {
+  const [categoryList, setCategoryList] = useState();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      try {
+        const data = await getRetailProductCategory();
+        setCategoryList(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+        setLoading(false);
+      }
+    };
+    fetchCategoryData();
+  }, []);
+  // Nếu đang loading, hiển thị loader
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Category</Text>
       <FlatList
         data={categoryList}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.categoryId.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => setSelectCategory(item.categoryName)}
+          >
             <View style={styles.cardContent}>
-              <Image source={item.icon} style={styles.image} />
-              <Text style={styles.cardTitle}>{item.title}</Text>
+              {/* <Image source={item.icon} style={styles.image} /> */}
+              <Image
+                source={{ uri: String(item.categoryImage) }} //  là URL hoặc base64
+                style={styles.image}
+              />
+              <Text style={styles.cardTitle}>{item.categoryName}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -40,7 +60,7 @@ const Category = () => {
     </View>
   );
 };
-
+export default Category;
 const styles = StyleSheet.create({
   container: {
     // backgroundColor: "#f1f1f1",
@@ -77,5 +97,3 @@ const styles = StyleSheet.create({
     color: "#555",
   },
 });
-
-export default Category;

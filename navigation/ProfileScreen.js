@@ -4,12 +4,32 @@ import { Ionicons } from "react-native-vector-icons";
 import Footer from "../components/Footer/Footer";
 import { useNavigation } from "@react-navigation/native";
 import avatar from "../assets/man.jpg";
-
+import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const ProfileScreen = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedFirstName = await AsyncStorage.getItem("firstName");
+      const storedLastName = await AsyncStorage.getItem("lastName");
+      setFirstName(storedFirstName || "");
+      setLastName(storedLastName || "");
+    };
+
+    fetchData();
+  }, []);
   const navigation = useNavigation();
   const handleNavigation = (value) => {
     if (value === "Cart") {
       navigation.navigate("Cart");
+    }
+    if (value === "Wallet") {
+      navigation.navigate("Wallet");
+    }
+    if (value === "Address Saved") {
+      navigation.navigate("Address");
     }
   };
 
@@ -18,7 +38,10 @@ const ProfileScreen = () => {
       {/* Header */}
       <View style={styles.headerContainer}>
         <Image source={avatar} style={styles.avatarImage} />
-        <Text style={styles.userName}>Thi Minh Đạt</Text>
+        <Text style={styles.userName}>
+          {firstName}
+          {lastName}
+        </Text>
         {/* <Text style={styles.userInfoPhone}>0865689021</Text> */}
       </View>
 
@@ -37,11 +60,7 @@ const ProfileScreen = () => {
           <TouchableOpacity
             key={index}
             style={styles.menuItem}
-            onPress={() => {
-              if (item.text === "Cart") {
-                handleNavigation("Cart");
-              }
-            }}
+            onPress={() => handleNavigation(item.text)}
           >
             <Ionicons name={item.icon} size={20} color="#2C3E50" />
             <Text style={styles.menuText}>{item.text}</Text>
@@ -80,16 +99,16 @@ const ProfileScreen = () => {
 const menuItems = [
   { icon: "cart", text: "Cart" },
   { icon: "wallet", text: "Wallet" },
-  { icon: "document-text", text: "Invoice Information" },
   { icon: "bookmark", text: "Address Saved" },
+  { icon: "settings", text: "Account Settings" },
+  { icon: "key", text: "Change Password" },
 ];
 
 const settingsItems = [
-  { icon: "file-tray", text: "Điều khoản và chính sách" },
-  { icon: "headset", text: "Trung tâm hỗ trợ" },
-  { icon: "business", text: "Thông tin shop" },
-  { icon: "settings", text: "Cài đặt tài khoản" },
-  { icon: "key", text: "Đổi mật khẩu" },
+  { icon: "file-tray", text: "Terms and Policies" },
+  { icon: "headset", text: "Support Center" },
+  { icon: "business", text: "Shop Information" },
+  { icon: "document-text", text: "Invoice Information" },
 ];
 
 const styles = StyleSheet.create({

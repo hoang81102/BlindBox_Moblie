@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,81 +9,129 @@ import {
   Modal,
   TouchableWithoutFeedback,
   FlatList,
+  Alert,
 } from "react-native";
 import { Ionicons } from "react-native-vector-icons";
 import avatar from "../assets/man.jpg";
 import { useNavigation } from "@react-navigation/native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  getUserInformation,
+  updateUserInformation,
+} from "../services/UserService";
 
 const ProfileUpdatedScreen = () => {
-  const [name, setName] = useState("Thi Minh Đạt");
-  const [phone, setPhone] = useState("0865659402");
-  const [email, setEmail] = useState("thiminhdatdaknong@gmail.com");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [userId, setUserId] = useState(null);
   const navigation = useNavigation();
 
-  // Các lựa chọn giới tính
   const genderOptions = ["Male", "Female", "Other"];
 
-  // Hàm xử lý khi người dùng chọn giới tính
   const handleGenderSelect = (selectedGender) => {
     setGender(selectedGender);
-    setIsModalVisible(false); // Đóng modal sau khi chọn
+    setIsModalVisible(false);
+  };
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const storeUserId = await AsyncStorage.getItem("userId");
+      setUserId(storeUserId);
+      if (storeUserId) {
+        const userData = await getUserInformation(storeUserId);
+        if (userData) {
+          setFirstName(userData.firstName);
+          setLastName(userData.lastName);
+          setPhone(userData.phoneNumber);
+          setEmail(userData.email);
+          setGender(userData.gender || ""); // Đảm bảo giá trị mặc định
+        }
+      }
+    };
+    fetchUserId();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      if (userId) {
+        await updateUserInformation(
+          userId,
+          firstName,
+          lastName,
+          email,
+          phone,
+          gender
+        );
+        Alert.alert("Profile updated successfully");
+        navigation.goBack();
+      } else {
+        Alert.alert("User ID not found");
+      }
+    } catch (error) {
+      Alert.alert("Error updating profile");
+      console.error(error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.navigate("Profile")}
+          onPress={() => navigation.goBack()}
         >
-          <Ionicons
-            name="arrow-back-circle-outline"
-            size={30}
-            color="#2C3E50"
+          <FontAwesome5
+            name="chevron-left"
+            style={styles.backButton}
+            size={20}
+            color="white"
           />
-          <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
+        <Text style={styles.profileText}>Profile</Text>
       </View>
 
-      {/* Profile Information */}
       <View style={styles.containerInformation}>
-        {/* Avatar */}
         <Image source={avatar} style={styles.avatar} />
 
-        {/* Wallet Section */}
         <View style={styles.walletContainer}>
           <Ionicons name="wallet-outline" size={24} color="#2C3E50" />
           <Text style={styles.walletText}>Số dư ví:</Text>
           <Text style={styles.walletAmount}>125.000 VNĐ</Text>
         </View>
 
-        {/* User Info Section */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Thi Minh Đạt"
-            value={name}
-            onChangeText={setName}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
           />
           <TextInput
             style={styles.input}
-            placeholder="0865659402"
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Phone"
             value={phone}
             onChangeText={setPhone}
             keyboardType="phone-pad"
           />
           <TextInput
             style={styles.input}
-            placeholder="thiminhdatdaknong@gmail.com"
+            placeholder="Email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
           />
 
-          {/* Gender input */}
           <TouchableOpacity
             style={styles.input}
             onPress={() => setIsModalVisible(true)}
@@ -94,9 +142,8 @@ const ProfileUpdatedScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Buttons */}
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.saveButton}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -108,7 +155,6 @@ const ProfileUpdatedScreen = () => {
         </View>
       </View>
 
-      {/* Modal for Gender Selection */}
       <Modal
         visible={isModalVisible}
         transparent={true}
@@ -138,7 +184,6 @@ const ProfileUpdatedScreen = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -147,34 +192,45 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 20,
-    height: 70,
-    backgroundColor: "white",
-    paddingLeft: 15,
+    backgroundColor: "#a10000",
+    paddingVertical: 40,
+    paddingHorizontal: 10,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    elevation: 5,
   },
   backButton: {
     flexDirection: "row",
     alignItems: "center",
   },
-  backText: {
-    fontSize: 16,
-    marginLeft: 10,
-    color: "#2C3E50",
+  profileText: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 18,
+
+    color: "#fff",
+    fontWeight: "bold",
   },
   containerInformation: {
-    marginTop: 60,
+    marginTop: 10,
     marginHorizontal: 20,
     backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    elevation: 5,
+    padding: 25,
+    borderRadius: 15,
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     alignSelf: "center",
     marginBottom: 20,
+    borderWidth: 4,
+    borderColor: "#a10000", // Tạo viền cho avatar
   },
   walletContainer: {
     flexDirection: "row",
@@ -199,11 +255,11 @@ const styles = StyleSheet.create({
     height: 45,
     borderColor: "#ddd",
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
+    borderRadius: 10,
+    paddingHorizontal: 15,
     marginVertical: 10,
     fontSize: 16,
-    justifyContent: "center",
+    backgroundColor: "#f9f9f9", // Tạo nền nhẹ cho input
   },
   genderText: {
     fontSize: 16,
@@ -218,18 +274,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#0d0045",
     paddingVertical: 12,
     paddingHorizontal: 40,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: "center",
     flex: 1,
     marginRight: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
   cancelButton: {
     backgroundColor: "#E74C3C",
     paddingVertical: 12,
     paddingHorizontal: 40,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: "center",
     flex: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
   buttonText: {
     color: "#fff",
@@ -245,9 +309,14 @@ const styles = StyleSheet.create({
   modalContainer: {
     width: 300,
     backgroundColor: "#fff",
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 20,
     alignItems: "center",
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
   },
   modalTitle: {
     fontSize: 18,

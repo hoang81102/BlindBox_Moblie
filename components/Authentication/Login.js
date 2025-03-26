@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,38 +7,31 @@ import {
   StyleSheet,
   Image,
   Alert,
-  ActivityIndicator, // Dùng để hiển thị loading spinner
+  ActivityIndicator,
+  Modal,
 } from "react-native";
-import { login } from "../../services/AuthService"; // Giả sử bạn đã có AuthService
-import blindbox from "../../assets/doremon.png"; // Hình ảnh logo
 import { useNavigation } from "@react-navigation/native";
-
+import { login, saveUser } from "../../services/AuthService"; // Giả sử bạn đã có AuthService
+import blindbox from "../../assets/dimoo.jpg";
+import FbLogo from "../../assets/facebook.png";
+import GgLogo from "../../assets/google.png";
+import LiLogo from "../../assets/linkedin.png";
+import { useGoogleLogin } from "../../services/GoogleAuthService"; // Import hook useGoogleLogin
+import ForgotPasswordModal from "./ForgotPasswordModal";
 const Login = () => {
   const navigation = useNavigation();
-
   const [email, setEmail] = useState("");
   const [password, setPassWord] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Trạng thái loading khi đăng nhập
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeFb, setActiveFb] = useState(false);
+  const [activeGg, setActiveGg] = useState(false);
+  const [activeLi, setActiveLi] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
 
-  const handleForgotPassword = () => {
-    console.log("Forgot password clicked");
-  };
+  // Google login hook
+  const { request, promptAsync } = useGoogleLogin(); // Sử dụng hook Google login
 
-  const handleCreateAccount = () => {
-    console.log("Create account clicked");
-  };
-
-  // Cập nhật email khi người dùng nhập
-  const handleEmail = (value) => {
-    setEmail(value);
-  };
-
-  // Cập nhật mật khẩu khi người dùng nhập
-  const handlePassword = (value) => {
-    setPassWord(value);
-  };
-
-  // Xử lý đăng nhập
+  // Xử lý đăng nhập bình thường với email và password
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Email and Password are required");
@@ -57,6 +50,11 @@ const Login = () => {
     }
   };
 
+  // Xử lý phần quên password
+  const handleForgotPassword = () => {
+    console.log("Click forgot password");
+    setForgotPassword(true);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
@@ -71,8 +69,8 @@ const Login = () => {
               style={styles.input}
               placeholder="Enter your email"
               keyboardType="email-address"
-              value={email} // Liên kết với state email
-              onChangeText={handleEmail} // Cập nhật email khi người dùng nhập
+              value={email}
+              onChangeText={(text) => setEmail(text)} // Cập nhật email
             />
           </View>
           <View style={styles.inputContainer}>
@@ -81,30 +79,73 @@ const Login = () => {
               style={styles.input}
               placeholder="Enter your password"
               secureTextEntry
-              value={password} // Liên kết với state password
-              onChangeText={handlePassword} // Cập nhật password khi người dùng nhập
+              value={password}
+              onChangeText={(text) => setPassWord(text)} // Cập nhật password
             />
           </View>
         </View>
 
         {/* Hiển thị spinner loading nếu đang đăng nhập */}
         {isLoading ? (
-          <ActivityIndicator size="large" color="#007aff" />
+          <ActivityIndicator size="large" color="#d32f2f" />
         ) : (
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Log In</Text>
           </TouchableOpacity>
         )}
 
-        {/* Forgot password link */}
-        <TouchableOpacity onPress={handleForgotPassword}>
-          <Text style={styles.linkText}>Forgot password?</Text>
-        </TouchableOpacity>
+        {/* Phần Login with */}
+        <View style={styles.socialLoginContainer}>
+          <TouchableOpacity
+            style={[styles.socialButton, activeFb && styles.activeButton]}
+            onPressIn={() => setActiveFb(true)}
+            onPressOut={() => setActiveFb(false)}
+          >
+            <Image source={FbLogo} style={styles.socialIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.socialButton, activeGg && styles.activeButton]}
+            onPressIn={() => setActiveGg(true)}
+            onPressOut={() => setActiveGg(false)}
+            onPress={async () => {
+              setIsLoading(true); // Bắt đầu loading khi đăng nhập Google
+              await promptAsync(); // Thực hiện đăng nhập Google
+              setIsLoading(false); // Dừng loading sau khi đăng nhập
+            }} // Đăng nhập Google
+          >
+            <Image source={GgLogo} style={styles.socialIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.socialButton, activeLi && styles.activeButton]}
+            onPressIn={() => setActiveLi(true)}
+            onPressOut={() => setActiveLi(false)}
+          >
+            <Image source={LiLogo} style={styles.socialIcon} />
+          </TouchableOpacity>
+        </View>
 
-        {/* Create account link */}
-        <TouchableOpacity onPress={handleCreateAccount}>
-          <Text style={styles.linkText}>Create account</Text>
-        </TouchableOpacity>
+        {/* Forgot password link và Create account link */}
+        <View style={styles.linkContainer}>
+          <TouchableOpacity onPress={() => handleForgotPassword()}>
+            <Text style={styles.linkText}>Forgot password?</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Text style={styles.linkText}>Create account</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Forgot Password Modal */}
+        <Modal
+          visible={forgotPassword}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setForgotPassword(false)} // Close modal on request
+        >
+          <View style={styles.modalOverlay}>
+            <ForgotPasswordModal closeModal={() => setForgotPassword(false)} />
+          </View>
+        </Modal>
       </View>
     </View>
   );
@@ -130,7 +171,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   bottomContainer: {
-    backgroundColor: "#007aff",
+    backgroundColor: "#a10000",
     flex: 1,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -164,12 +205,11 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   button: {
-    backgroundColor: "#34b7f1",
+    backgroundColor: "#d32f2f",
     borderRadius: 30,
     width: "80%",
     paddingVertical: 15,
     alignItems: "center",
-    marginVertical: 15,
   },
   buttonText: {
     fontSize: 18,
@@ -181,6 +221,52 @@ const styles = StyleSheet.create({
     color: "white",
     textDecorationLine: "underline",
     marginTop: 5,
+  },
+  // Phần Login with
+  socialLoginContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: "100%",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  activeButton: {
+    opacity: 0.7, // Tạo hiệu ứng mờ khi nhấn
+  },
+  socialButton: {
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 25,
+    backgroundColor: "white",
+
+    elevation: 3, // Hiệu ứng bóng mờ khi nhấn
+    shadowColor: "#000", // Tạo bóng
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  socialIcon: {
+    width: 30,
+    height: 30,
+    resizeMode: "contain",
+  },
+  linkContainer: {
+    alignItems: "center", // Căn giữa các liên kết
+  },
+  linkText: {
+    fontSize: 14,
+    color: "white",
+    textDecorationLine: "underline",
+    marginTop: 20,
+  },
+  // Phần forgot password
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 

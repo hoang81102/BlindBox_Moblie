@@ -1,109 +1,110 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import labubu from "../../assets/labubu.png";
-import { RadioButton } from "react-native-paper";
+import { FontAwesome5 } from "@expo/vector-icons";
+import labubu from "../../assets/labubu.png"; // Sử dụng hình ảnh mẫu
+import { useNavigation } from "@react-navigation/native";
 
-const DetailProductBody = () => {
-  const [expanded, setExpanded] = useState(false); // State for toggling the description
-  const [setSelection, setSetSelection] = useState("");
-  const [stockStatus, setStockStatus] = useState("inStock");
+const DetailProductBody = ({
+  productId,
+  imageUrl,
+  name,
+  price,
+  description,
+  stock,
+  type,
+  setSelectedSize,
+  selectedSize,
+  setQuantity,
+  quantity,
+  handleAddToCart, // Nhận hàm xử lý thêm vào giỏ hàng
+}) => {
+  const navigation = useNavigation();
 
-  // Toggle read more or read less
-  const handleReadMore = () => {
-    setExpanded(!expanded);
-  };
-
-  // Handle set selection change
-  const handleSetChange = (value) => {
-    setSetSelection(value);
+  // Cập nhật số lượng của sản phẩm
+  const handleQuantity = (value) => {
+    setQuantity((prevQuantity) =>
+      value === "plus"
+        ? prevQuantity + 1
+        : prevQuantity - 1 < 1
+        ? 1
+        : prevQuantity - 1
+    );
   };
 
   return (
     <View style={styles.component}>
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={labubu} style={styles.image} />
+          <Image source={{ uri: imageUrl }} style={styles.image} />
         </View>
         <View style={styles.productInfo}>
-          <Text style={styles.productTitle}>Labubu - Limited Edition</Text>
+          <Text style={styles.productTitle}>{name}</Text>
           <Ionicons name="heart-outline" style={styles.icon} size={20} />
         </View>
         <View style={styles.priceInfo}>
-          <Text style={styles.productPrice}>125.000VNĐ</Text>
+          <Text style={styles.productPrice}>{price} VNĐ</Text>
           <Text style={styles.vatInfo}>VAT 10%</Text>
-        </View>
-
-        {/* Stock Status Section */}
-        <View style={styles.stockStatus}>
-          {stockStatus === "inStock" ? (
-            <Text style={styles.inStock}>In Stock</Text>
-          ) : (
-            <Text style={styles.outOfStock}>Out of Stock</Text>
-          )}
-        </View>
-
-        <View style={styles.description}>
-          <Text style={styles.descriptionTitle}>Description Product</Text>
-          <Text style={styles.descriptionText}>
-            Blindbox is a random product. Store can't know in it what it is. It
-            might contain something unique, rare, or unexpected that can
-            surprise and delight you. Each blind box is a mystery waiting to be
-            discovered, making it an exciting and fun experience for collectors
-            and fans alike.
-            {expanded && (
-              <Text>
-                {" "}
-                This is an exclusive collection with limited quantities
-                available. Don’t miss the chance to own a part of this special
-                edition.
-              </Text>
-            )}
-          </Text>
-          <TouchableOpacity onPress={handleReadMore}>
-            <Text style={styles.readMoreText}>
-              {expanded ? "Read less..." : "Read more..."}
-            </Text>
+          <TouchableOpacity
+            style={styles.feedbackLink}
+            onPress={() =>
+              navigation.navigate("ProductFeedback", {
+                type: type,
+                productId: productId,
+              })
+            }
+          >
+            <Text style={styles.feedbackText}>Feedback</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Set Selection Section */}
-        <View style={styles.setSelection}>
-          <Text style={styles.setTitle}>Set</Text>
-          <View style={styles.boxContainer}>
-            <TouchableOpacity
-              style={[
-                styles.box,
-                setSelection === "Single box" && styles.boxActive,
-              ]}
-              onPress={() => handleSetChange("Single box")}
-            >
-              <Text
-                style={
-                  setSelection === "Single box" ? styles.boxActiveText : null
-                }
+        {/* Size Selector */}
+        <View style={styles.sizeSelector}>
+          <Text style={styles.sizeTitle}>Select Size</Text>
+          <View style={styles.sizeOptions}>
+            {["100%", "200%", "300%", "1000%"].map((size) => (
+              <TouchableOpacity
+                key={size}
+                style={[
+                  styles.sizeOption,
+                  selectedSize === size && styles.selectedSize,
+                ]}
+                onPress={() => setSelectedSize(size)}
               >
-                Single box
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.box,
-                setSelection === "Set of 10 boxes" && styles.boxActive,
-              ]}
-              onPress={() => handleSetChange("Set of 10 boxes")}
-            >
-              <Text
-                style={
-                  setSelection === "Set of 10 boxes"
-                    ? styles.boxActiveText
-                    : null
-                }
-              >
-                Set of 10 boxes
-              </Text>
-            </TouchableOpacity>
+                <Text style={styles.sizeText}>{size}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
+          <Text style={styles.sizeDescription}>
+            {selectedSize === "100%" ? "Size nguyên bản" : ""}
+            {selectedSize === "200%" ? "Size gấp đôi so với nguyên bản" : ""}
+            {selectedSize === "300%" ? "Size gấp ba so với nguyên bản" : ""}
+            {selectedSize === "1000%" ? "Size khổng lồ so với nguyên bản" : ""}
+          </Text>
+        </View>
+
+        {/* Product Description */}
+        <View style={styles.description}>
+          <Text style={styles.descriptionTitle}>Description Product</Text>
+          <Text style={styles.descriptionText}>{description}</Text>
+        </View>
+
+        {/* Quantity Adjuster */}
+        <View style={styles.quantityContainer}>
+          <Text style={styles.quantityText}>Quantity:</Text>
+          <TouchableOpacity
+            onPress={() => handleQuantity("minus")}
+            style={styles.quantityButton}
+          >
+            <FontAwesome5 name="minus" style={styles.icon} />
+          </TouchableOpacity>
+          <Text style={styles.quantity}>{quantity}</Text>
+          <TouchableOpacity
+            onPress={() => handleQuantity("plus")}
+            style={styles.quantityButton}
+          >
+            <FontAwesome5 name="plus" style={styles.icon} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -112,8 +113,7 @@ const DetailProductBody = () => {
 
 const styles = StyleSheet.create({
   component: {
-    // Removed the red background here for better flexibility
-    flexGrow: 1,
+    paddingBottom: 32,
   },
   container: {
     flexDirection: "column",
@@ -123,8 +123,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   image: {
-    width: 100,
-    height: 200,
+    width: "100%",
+    height: 240,
     resizeMode: "cover",
   },
   productInfo: {
@@ -132,11 +132,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 15,
     paddingVertical: 10,
-    backgroundColor: "#e0f7fa",
+    backgroundColor: "#a10000",
   },
   productTitle: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "white",
   },
   priceInfo: {
     flexDirection: "row",
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
   vatInfo: {
     marginLeft: 10,
     fontSize: 14,
-    backgroundColor: "#007aff",
+    backgroundColor: "#d32f2f",
     paddingVertical: 5,
     paddingHorizontal: 12,
     borderRadius: 25,
@@ -165,62 +166,81 @@ const styles = StyleSheet.create({
   descriptionTitle: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#a10000",
   },
   descriptionText: {
     color: "#333",
     fontSize: 14,
     lineHeight: 22,
   },
-  readMoreText: {
-    color: "#007BFF",
-    fontSize: 14,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  setSelection: {
-    marginTop: 10,
-    paddingHorizontal: 15,
+  quantityContainer: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  setTitle: {
-    // fontSize: 16,
-    fontWeight: "bold",
-    paddingVertical: 10,
-  },
-  boxContainer: {
-    flexDirection: "row",
-    marginLeft: 20,
-  },
-  box: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: "#007BFF",
-    borderRadius: 5,
-    backgroundColor: "#f1f1f1",
-  },
-  boxActive: {
-    backgroundColor: "#007BFF",
-    borderColor: "#007BFF",
-  },
-  boxActiveText: {
-    color: "#fff",
-  },
-  stockStatus: {
-    marginTop: 10,
+    marginTop: 15,
     paddingHorizontal: 15,
   },
-  inStock: {
+  quantityText: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "green",
+    fontWeight: 600,
   },
-  outOfStock: {
+  quantityButton: {
+    backgroundColor: "#f8f8f8",
+    padding: 4,
+    marginHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    elevation: 3,
+  },
+  quantity: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "red",
+    color: "#333",
+  },
+  icon: {
+    fontSize: 12,
+    color: "#a10000",
+  },
+  sizeSelector: {
+    paddingHorizontal: 15,
+  },
+  sizeTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#a10000",
+  },
+  sizeOptions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  sizeOption: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  selectedSize: {
+    backgroundColor: "#d32f2f",
+  },
+  sizeText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  sizeDescription: {
+    marginTop: 10,
+    fontSize: 12,
+    color: "gray",
+  },
+  feedbackLink: {
+    marginLeft: 10,
+    alignItems: "center",
+  },
+  feedbackText: {
+    fontSize: 16,
+    color: "#d32f2f",
+    textDecorationLine: "underline",
   },
 });
 

@@ -8,8 +8,6 @@ import Footer from "../components/Footer/Footer";
 const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      {" "}
-      {/* SafeAreaView để tránh che khuất vùng notch trên iPhone */}
       <View style={styles.mainContent}>
         <Header />
         <Body />
@@ -22,10 +20,10 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Cho phép SafeAreaView chiếm toàn bộ không gian màn hình
+    flex: 1,
   },
   mainContent: {
-    flex: 1, // Cho phép phần nội dung chính giãn ra, để Footer luôn ở dưới
+    flex: 1,
   },
 });
 
